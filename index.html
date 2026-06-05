@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>38A0BR — Você venceria 38 rodadas?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@400;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='8' fill='%230F0B05'/><text x='32' y='46' font-family='Arial Black,sans-serif' font-size='30' font-weight='900' fill='%23C9A84C' text-anchor='middle'>38</text></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -17,7 +18,7 @@
   --muted:#8A7040;
   --dim:#5A4520;
 }
-body{background:var(--dark);color:var(--gold-light);font-family:'Special Elite',serif;min-height:100vh;overflow-x:hidden}
+body{background:var(--dark);color:var(--gold-light);font-family:'Lato',sans-serif;min-height:100vh;overflow-x:hidden}
 .screen{display:none;min-height:100vh}
 .screen.active{display:flex;flex-direction:column}
 
@@ -811,8 +812,7 @@ function renderJogadoresList(posIdx){
       <div class="jog-info">
         <div class="jog-name">${jog.nome}</div>
         <div class="jog-stats">Jogos — ${jog.jogos} // Gols — ${jog.gols}</div>
-      </div>
-      <div class="jog-gols">${jog.gols}</div>`;
+      </div>`;
     card.onclick=()=>escolherJogador(posIdx,jog);
     lista.appendChild(card);
   });
