@@ -611,8 +611,8 @@ let state = {
   dadoStep: 1,
   dadoTime1: null,
   formacaoEscolhida: null,
-  posicaoAtual: 0,
-  timePosAtual: null
+  timePosAtual: null,
+  jogadorSelecionado: null
 };
 
 // ============================================================
@@ -735,8 +735,8 @@ function gerarRodadas(){
 function iniciarEscalacao(){
   state.escalacao={};
   state.posAtiva=null;
-  state.posicaoAtual=0;
   state.timePosAtual=null;
+  state.jogadorSelecionado=null;
 
   // time sintético — slots baseados nas posições da formação escolhida
   const posicoes = POSICOES_CAMPO[state.formacaoEscolhida] || POSICOES_CAMPO['4-4-2'];
@@ -771,16 +771,12 @@ function renderProgress(){
 }
 
 function atualizarEscolhaUI(){
-  const posicoes = getPosicoesCampo();
-  const idx = state.posicaoAtual;
-  const posAtual = posicoes[idx];
-  state.posAtiva = idx;
-
+  const feitos = Object.keys(state.escalacao).length;
   document.getElementById('esc-sub').textContent =
-    `Formação: ${state.formacaoEscolhida} — Posição ${idx+1} de 11`;
-  document.getElementById('escolha-pos-title').textContent = posAtual ? posAtual.pos : '—';
+    `Formação: ${state.formacaoEscolhida} — ${feitos} de 11 preenchidos`;
 
   if(!state.timePosAtual){
+    document.getElementById('escolha-pos-title').textContent = feitos===0 ? 'Comece!' : 'Próximo';
     document.getElementById('escolha-hint').textContent = 'Role o dado para sortear um time';
     document.getElementById('jogadores-list').innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:32px 0">
@@ -789,8 +785,14 @@ function atualizarEscolhaUI(){
       </div>`;
   } else {
     const t = state.timePosAtual;
-    document.getElementById('escolha-hint').textContent = `${t.time} ${t.ano} — escolha o ${posAtual.pos}`;
-    renderJogadoresList(idx);
+    if(!state.jogadorSelecionado){
+      document.getElementById('escolha-pos-title').textContent = `${t.time} ${t.ano}`;
+      document.getElementById('escolha-hint').textContent = 'Escolha um jogador';
+    } else {
+      document.getElementById('escolha-pos-title').textContent = state.jogadorSelecionado.nome;
+      document.getElementById('escolha-hint').textContent = 'Clique em um slot vazio no campo';
+    }
+    renderJogadoresList();
   }
 
   renderCampo();
@@ -828,6 +830,7 @@ function renderCampo(){
   campo.querySelectorAll('.player-slot').forEach(e=>e.remove());
   const jogadores = state.meuTime.jogadores;
   const posicoes = getPosicoesCampo();
+  const temPendente = !!state.jogadorSelecionado;
   jogadores.forEach((jog,i)=>{
     const pos = posicoes[i] || {x:50,y:50};
     const slot = document.createElement('div');
@@ -835,27 +838,45 @@ function renderCampo(){
     slot.style.left=pos.x+'%';
     slot.style.top=pos.y+'%';
     const escolhido = state.escalacao[i];
-    const isAtivo = state.posAtiva===i;
+    // Pulsa slots vazios quando há jogador pendente para colocar
+    const slotVazioAtivo = temPendente && !escolhido;
     slot.innerHTML=`
-      <div class="player-circle ${escolhido?'filled':''} ${isAtivo&&!escolhido?'active-slot':''}">${jog.pos}</div>
+      <div class="player-circle ${escolhido?'filled':''} ${slotVazioAtivo?'active-slot':''}">${jog.pos}</div>
       <div class="player-label ${escolhido?'':'empty'}">${escolhido?escolhido.nome.split(' ')[0]:jog.pos}</div>`;
+    slot.style.cursor = (escolhido || slotVazioAtivo) ? 'pointer' : 'default';
     slot.onclick=()=>selecionarPosicao(i);
     campo.appendChild(slot);
   });
 }
 
 function selecionarPosicao(idx){
-  const feitos = Object.keys(state.escalacao).length;
-  // Só permite clicar em posições já preenchidas ou a atual
-  if(idx > feitos) return;
-  state.posicaoAtual = idx;
-  state.timePosAtual = null;
-  delete state.escalacao[idx];
-  document.getElementById('btn-confirmar').style.display='none';
-  atualizarEscolhaUI();
+  if(state.jogadorSelecionado && !state.escalacao[idx]){
+    // Coloca o jogador pendente neste slot
+    state.escalacao[idx] = state.jogadorSelecionado;
+    state.jogadorSelecionado = null;
+    state.timePosAtual = null;
+    const feitos = Object.keys(state.escalacao).length;
+    if(feitos >= getPosicoesCampo().length){
+      renderCampo();
+      renderProgress();
+      document.getElementById('btn-confirmar').style.display='block';
+      document.getElementById('escolha-pos-title').textContent='✓ Completo';
+      document.getElementById('escolha-hint').textContent='Escalação completa! Confirme para começar.';
+      document.getElementById('jogadores-list').innerHTML='';
+      document.getElementById('esc-sub').textContent=`Formação: ${state.formacaoEscolhida} — Escalação completa`;
+    } else {
+      atualizarEscolhaUI();
+    }
+  } else if(state.escalacao[idx] && !state.jogadorSelecionado){
+    // Clicou num slot preenchido sem pendente: remove o jogador para refazer
+    delete state.escalacao[idx];
+    state.timePosAtual = null;
+    document.getElementById('btn-confirmar').style.display='none';
+    atualizarEscolhaUI();
+  }
 }
 
-function renderJogadoresList(posIdx){
+function renderJogadoresList(){
   const lista = document.getElementById('jogadores-list');
   lista.innerHTML='';
   const t = state.timePosAtual;
@@ -867,15 +888,16 @@ function renderJogadoresList(posIdx){
   lista.appendChild(header);
 
   t.jogadores.forEach(jog=>{
+    const isSelecionado = state.jogadorSelecionado && state.jogadorSelecionado.nome===jog.nome;
     const card = document.createElement('div');
-    card.className='jogador-card';
+    card.className='jogador-card'+(isSelecionado?' selected':'');
     card.innerHTML=`
       <div class="jog-pos">${jog.pos}</div>
       <div class="jog-info">
         <div class="jog-name">${jog.nome}</div>
         <div class="jog-stats">Jogos — ${jog.jogos} // Gols — ${jog.gols}</div>
       </div>`;
-    card.onclick=()=>escolherJogador(posIdx,jog);
+    card.onclick=()=>escolherJogador(jog);
     lista.appendChild(card);
   });
 
@@ -884,28 +906,14 @@ function renderJogadoresList(posIdx){
   reroll.textContent='⚄  Sortear outro time';
   reroll.onmouseenter=()=>reroll.style.borderColor='var(--gold)';
   reroll.onmouseleave=()=>reroll.style.borderColor='var(--brown)';
-  reroll.onclick=()=>{state.timePosAtual=null;atualizarEscolhaUI();};
+  reroll.onclick=()=>{state.timePosAtual=null;state.jogadorSelecionado=null;atualizarEscolhaUI();};
   lista.appendChild(reroll);
 }
 
-function escolherJogador(posIdx, jog){
-  state.escalacao[posIdx]=jog;
-  state.timePosAtual=null;
-  const total=getPosicoesCampo().length;
-  const feitos=Object.keys(state.escalacao).length;
-  if(feitos>=total){
-    state.posicaoAtual=total-1;
-    renderCampo();
-    renderProgress();
-    document.getElementById('btn-confirmar').style.display='block';
-    document.getElementById('escolha-pos-title').textContent='✓ Completo';
-    document.getElementById('escolha-hint').textContent='Escalação completa! Confirme para começar.';
-    document.getElementById('jogadores-list').innerHTML='';
-    document.getElementById('esc-sub').textContent=`Formação: ${state.formacaoEscolhida} — Escalação completa`;
-  } else {
-    state.posicaoAtual=feitos;
-    atualizarEscolhaUI();
-  }
+function escolherJogador(jog){
+  // Seleciona jogador; usuário clica no slot do campo para posicioná-lo
+  state.jogadorSelecionado = state.jogadorSelecionado?.nome===jog.nome ? null : jog;
+  atualizarEscolhaUI();
 }
 
 function confirmarEscalacao(){
