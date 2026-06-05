@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>38A0BR — Você venceria 38 rodadas?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C9A84C;
+  --gold-light:#E8D5A3;
+  --dark:#1A1208;
+  --darker:#0F0B05;
+  --brown:#3A2E12;
+  --muted:#8A7040;
+  --dim:#5A4520;
+}
+body{background:var(--dark);color:var(--gold-light);font-family:'Special Elite',serif;min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+
+/* SCANLINES */
+body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999}
+
+/* HEADER */
+.header{background:var(--darker);border-bottom:3px solid var(--gold);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;flex-shrink:0}
+.logo{display:flex;flex-direction:column;line-height:1}
+.logo-main{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);letter-spacing:6px}
+.logo-sub{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--gold-light);letter-spacing:8px;margin-top:-4px}
+.header-right{text-align:right}
+.header-tag{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
+
+/* TICKER */
+.ticker{background:var(--gold);padding:5px 0;overflow:hidden;flex-shrink:0}
+.ticker-inner{display:flex;gap:0;animation:scroll 30s linear infinite;white-space:nowrap;width:max-content}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;color:var(--darker);text-transform:uppercase;padding:0 24px;border-right:1px solid rgba(0,0,0,0.2)}
+
+/* BOTÕES */
+.btn{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:12px 36px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:10px;transition:all .15s}
+.btn-gold{background:var(--gold);color:var(--darker)}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+.btn-outline:hover{background:var(--gold);color:var(--darker)}
+.btn-sm{font-size:14px;padding:8px 20px;letter-spacing:2px}
+
+/* ORNAMENTO */
+.ornament{text-align:center;color:var(--brown);letter-spacing:12px;padding:8px 0;font-size:16px}
+
+/* ======================== TELA 1: HOME ======================== */
+#screen-home{justify-content:flex-start}
+.home-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:40px 40px 0;max-width:1100px;margin:0 auto;width:100%}
+.home-left{}
+.label-top{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.label-top::before{content:'';display:block;width:20px;height:1px;background:var(--gold)}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:.9;color:var(--gold-light);letter-spacing:2px;margin-bottom:20px}
+.hero-title em{color:var(--gold);font-style:normal}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:340px;margin-bottom:28px}
+.stats-strip{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--brown);margin-top:40px}
+.stat-block{padding:16px;border-right:1px solid var(--brown)}
+.stat-block:last-child{border-right:none}
+.stat-label{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold)}
+.stat-sub{font-size:10px;color:var(--dim)}
+.home-right{}
+.preview-card{background:var(--darker);border:1px solid var(--brown);padding:24px}
+.preview-title{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--brown);margin-bottom:20px}
+.preview-formation{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-bottom:20px}
+.preview-team{text-align:center}
+.preview-badge{width:52px;height:52px;border-radius:50%;background:var(--brown);border:2px solid var(--gold);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--gold);letter-spacing:1px}
+.preview-name{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold-light);letter-spacing:1px}
+.preview-year{font-family:'Oswald',sans-serif;font-size:11px;color:var(--muted);letter-spacing:2px}
+.preview-vs{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold)}
+.preview-players{border-top:1px solid var(--brown);padding-top:14px}
+.preview-player{display:flex;align-items:center;padding:5px 0;border-bottom:1px solid rgba(58,46,18,.4)}
+.preview-pos{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);width:38px;text-transform:uppercase}
+.preview-pname{font-size:12px;color:var(--gold-light);flex:1}
+.preview-stat{font-family:'Oswald',sans-serif;font-size:10px;color:var(--muted)}
+
+/* ======================== TELA 2: DADO ======================== */
+#screen-dado{align-items:center;justify-content:center;text-align:center}
+.dado-wrap{max-width:600px;width:100%;padding:40px}
+.dado-label{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:32px}
+.dado-box{width:160px;height:160px;background:var(--darker);border:2px solid var(--gold);margin:0 auto 32px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:80px;color:var(--gold);cursor:pointer;transition:all .2s;position:relative}
+.dado-box:hover{border-color:var(--gold-light);transform:scale(1.05)}
+.dado-box.rolling{animation:shake .5s ease-in-out}
+@keyframes shake{0%,100%{transform:rotate(0deg)}20%{transform:rotate(-8deg)}40%{transform:rotate(8deg)}60%{transform:rotate(-5deg)}80%{transform:rotate(5deg)}}
+.dado-result{min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.dado-time{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--gold-light);letter-spacing:3px}
+.dado-ano{font-family:'Oswald',sans-serif;font-size:16px;letter-spacing:4px;color:var(--gold)}
+.dado-formacao{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;color:var(--muted);margin-top:4px}
+.dado-step{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+
+/* ======================== TELA 3: ESCALAÇÃO ======================== */
+#screen-escalacao{align-items:stretch}
+.escalacao-header{background:var(--darker);border-bottom:2px solid var(--gold);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.esc-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:3px}
+.esc-sub{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:2px}
+.esc-progress{display:flex;align-items:center;gap:6px}
+.esc-dot{width:8px;height:8px;border-radius:50%;background:var(--brown);transition:.3s}
+.esc-dot.done{background:var(--gold)}
+.esc-dot.active{background:var(--gold-light);box-shadow:0 0 6px var(--gold)}
+.escalacao-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.campo-side{padding:24px 32px;border-right:1px solid var(--brown);display:flex;flex-direction:column;align-items:center}
+.campo-label{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+.campo{width:100%;max-width:320px;aspect-ratio:0.65;background:var(--darker);border:1px solid var(--brown);position:relative;overflow:hidden}
+.campo-grass{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0px,rgba(255,255,255,.02) 20px,transparent 20px,transparent 40px)}
+.campo-lines{position:absolute;inset:0}
+.campo-lines::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(201,168,76,.15)}
+.campo-lines::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;border:1px solid rgba(201,168,76,.15)}
+.player-slot{position:absolute;transform:translate(-50%,-50%);text-align:center;cursor:pointer}
+.player-circle{width:36px;height:36px;border-radius:50%;background:var(--brown);border:2px solid var(--muted);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:8px;color:var(--muted);letter-spacing:1px;transition:.2s;font-weight:700}
+.player-circle.filled{background:var(--gold);border-color:var(--gold-light);color:var(--darker)}
+.player-circle.active-slot{border-color:var(--gold-light);animation:pulse-slot 1s ease-in-out infinite}
+@keyframes pulse-slot{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.5)}50%{box-shadow:0 0 0 6px rgba(201,168,76,0)}}
+.player-label{font-family:'Oswald',sans-serif;font-size:8px;color:var(--gold-light);white-space:nowrap;letter-spacing:.5px;max-width:60px;overflow:hidden;text-overflow:ellipsis}
+.player-label.empty{color:var(--muted)}
+
+.escolha-side{padding:24px 32px;display:flex;flex-direction:column}
+.escolha-pos{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
+.escolha-hint{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:20px}
+.jogadores-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;max-height:400px}
+.jogador-card{background:var(--darker);border:1px solid var(--brown);padding:12px 16px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:12px}
+.jogador-card:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
+.jogador-card.selected{border-color:var(--gold);background:rgba(201,168,76,.1)}
+.jog-pos{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);width:36px;text-transform:uppercase;font-weight:700}
+.jog-info{flex:1}
+.jog-name{font-size:14px;color:var(--gold-light)}
+.jog-stats{font-family:'Oswald',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:1px}
+.jog-gols{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold)}
+
+/* ======================== TELA 4: TEMPORADA ======================== */
+#screen-temporada{align-items:stretch}
+.temp-header{background:var(--darker);border-bottom:2px solid var(--gold);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.temp-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:3px}
+.temp-record{display:flex;gap:24px}
+.temp-rec-item{text-align:center}
+.temp-rec-label{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.temp-rec-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold-light)}
+.temp-rec-val.win{color:#6ab04c}
+.temp-rec-val.lose{color:#e55039}
+.rodadas-grid{flex:1;overflow-y:auto;padding:24px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;align-content:start}
+.rodada-card{background:var(--darker);border:1px solid var(--brown);padding:14px 16px;position:relative}
+.rodada-card.pending{opacity:.5}
+.rodada-card.current{border-color:var(--gold);opacity:1}
+.rodada-card.win{border-left:3px solid #6ab04c}
+.rodada-card.draw{border-left:3px solid var(--gold)}
+.rodada-card.lose{border-left:3px solid #e55039}
+.rod-num{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.rod-matchup{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rod-team{flex:1}
+.rod-team-name{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--gold-light);letter-spacing:1px}
+.rod-team-year{font-family:'Oswald',sans-serif;font-size:9px;color:var(--muted);letter-spacing:1px}
+.rod-score{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);min-width:60px;text-align:center}
+.rod-score.pending-score{font-size:16px;color:var(--muted)}
+.rod-gols{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5}
+.rod-btn{margin-top:10px}
+.rodada-card.current .rod-btn{display:block}
+
+/* ======================== TELA 5: SIMULAÇÃO ======================== */
+#screen-simulacao{align-items:center;justify-content:center}
+.sim-wrap{max-width:640px;width:100%;padding:32px}
+.sim-placar-box{background:var(--darker);border:2px solid var(--gold);padding:28px;text-align:center;margin-bottom:24px}
+.sim-rodada-label{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+.sim-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;margin-bottom:20px}
+.sim-team-name{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold-light);letter-spacing:1px}
+.sim-team-year{font-family:'Oswald',sans-serif;font-size:10px;color:var(--muted);letter-spacing:2px}
+.sim-score{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--gold);line-height:1}
+.sim-score-sep{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--brown)}
+.sim-animating{animation:score-pop .3s ease-out}
+@keyframes score-pop{0%{transform:scale(1.3)}100%{transform:scale(1)}}
+.sim-resultado{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;padding:8px 20px;display:inline-block;margin-bottom:16px}
+.sim-resultado.win{background:rgba(106,176,76,.15);color:#6ab04c;border:1px solid #6ab04c}
+.sim-resultado.draw{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--gold)}
+.sim-resultado.lose{background:rgba(229,80,57,.15);color:#e55039;border:1px solid #e55039}
+.sim-gols-box{background:rgba(0,0,0,.3);padding:16px;margin-bottom:20px}
+.sim-gols-title{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.sim-gol-row{font-size:12px;color:var(--gold-light);padding:3px 0;border-bottom:1px solid rgba(58,46,18,.4)}
+.sim-gol-row:last-child{border:none}
+.sim-gol-time{font-family:'Oswald',sans-serif;color:var(--gold);margin-right:8px;font-size:11px}
+
+/* ======================== TELA 6: FIM ======================== */
+#screen-fim{align-items:center;justify-content:center;text-align:center}
+.fim-wrap{max-width:600px;padding:40px}
+.fim-titulo{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:.9;margin-bottom:20px}
+.fim-titulo.perfeito{color:var(--gold)}
+.fim-titulo.derrota{color:#e55039}
+.fim-sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:32px}
+.fim-record-box{background:var(--darker);border:1px solid var(--brown);padding:24px;margin-bottom:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.fim-stat{text-align:center;padding:0 16px;border-right:1px solid var(--brown)}
+.fim-stat:last-child{border-right:none}
+.fim-stat-label{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.fim-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold)}
+.fim-meu-time{background:var(--darker);border:1px solid var(--brown);padding:16px;margin-bottom:28px;text-align:left}
+.fim-meu-label{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.fim-meu-nome{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold-light);letter-spacing:2px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--darker)}
+::-webkit-scrollbar-thumb{background:var(--brown)}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+/* ======================== SELEÇÃO DE FORMAÇÃO ======================== */
+.formacao-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
+.formacao-card{background:var(--darker);border:2px solid var(--brown);padding:20px 16px;cursor:pointer;transition:.15s;text-align:center}
+.formacao-card:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
+.formacao-card.selected{border-color:var(--gold);background:rgba(201,168,76,.1)}
+.formacao-nome{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);letter-spacing:3px}
+.formacao-desc{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+
+/* ======================== TELA APOIO ======================== */
+#screen-apoio{align-items:center;justify-content:center}
+.apoio-wrap{max-width:480px;width:100%;padding:40px;text-align:center}
+.pix-key-box{background:rgba(0,0,0,.3);border:1px solid var(--brown);padding:14px 16px;font-family:'Oswald',sans-serif;font-size:12px;color:var(--gold-light);word-break:break-all;margin-bottom:16px;letter-spacing:.5px;line-height:1.6}
+.valor-pill{border:1px solid var(--brown);padding:10px 16px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);transition:.15s}
+.valor-pill:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
+</style>
+</head>
+<body>
+
+<!-- ======== TELA HOME ======== -->
+<div id="screen-home" class="screen active">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-main">38A0BR</div>
+      <div class="logo-sub">Almanaque</div>
+    </div>
+    <div class="header-right" style="display:flex;align-items:center;gap:16px">
+      <div class="header-tag">Futebol Brasileiro · 1959 — 2025</div>
+      <button class="btn btn-outline btn-sm" onclick="irParaApoio()">♥ Apoiar</button>
+    </div>
+  </div>
+  <div class="ticker">
+    <div class="ticker-inner" id="ticker-inner"></div>
+  </div>
+  <div class="home-body">
+    <div class="home-left">
+      <div class="label-top">Você está pronto?</div>
+      <div class="hero-title">Você<br>venceria<br><em>38</em><br>rodadas?</div>
+      <p class="hero-sub">Escolha um time histórico do Brasileirão. Enfrente 38 adversários lendários. O objetivo é terminar invicto. São poucos que conseguem.</p>
+      <button class="btn btn-gold" onclick="irParaDado()">⚄ &nbsp;Começar</button>
+      <div class="stats-strip">
+        <div class="stat-block">
+          <div class="stat-label">Times</div>
+          <div class="stat-value">76</div>
+          <div class="stat-sub">19 clubes · 4 eras</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Rodadas</div>
+          <div class="stat-value">38</div>
+          <div class="stat-sub">Temporada completa</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Duelos</div>
+          <div class="stat-value">5.700</div>
+          <div class="stat-sub">Combinações únicas</div>
+        </div>
+      </div>
+    </div>
+    <div class="home-right">
+      <div class="preview-card">
+        <div class="preview-title">Exemplo de duelo</div>
+        <div class="preview-formation">
+          <div class="preview-team">
+            <div class="preview-badge">FLA</div>
+            <div class="preview-name">Flamengo</div>
+            <div class="preview-year">1982</div>
+          </div>
+          <div class="preview-vs">VS</div>
+          <div class="preview-team">
+            <div class="preview-badge">SAN</div>
+            <div class="preview-name">Santos</div>
+            <div class="preview-year">1962</div>
+          </div>
+        </div>
+        <div class="preview-players">
+          <div class="preview-player"><span class="preview-pos">MEI</span><span class="preview-pname">Zico</span><span class="preview-stat">Gols — 508</span></div>
+          <div class="preview-player"><span class="preview-pos">MEI</span><span class="preview-pname">Pelé</span><span class="preview-stat">Gols — 1091</span></div>
+          <div class="preview-player"><span class="preview-pos">ST</span><span class="preview-pname">Nunes</span><span class="preview-stat">Gols — 90</span></div>
+          <div class="preview-player"><span class="preview-pos">LW</span><span class="preview-pname">Pepe</span><span class="preview-stat">Gols — 405</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== TELA DADO ======== -->
+<div id="screen-dado" class="screen">
+  <div class="header">
+    <div class="logo"><div class="logo-main">38A0BR</div><div class="logo-sub">Almanaque</div></div>
+    <button class="btn btn-outline btn-sm" onclick="irParaHome()">← Voltar</button>
+  </div>
+
+  <!-- PASSO 0: ESCOLHA A FORMAÇÃO -->
+  <div id="dado-formacao-step" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px;text-align:center">
+    <div class="dado-step">Passo 1 de 2 — Escolha a formação</div>
+    <div class="dado-label" style="margin-bottom:0">Qual sistema tático você vai usar?</div>
+    <div class="formacao-grid" style="max-width:480px;width:100%">
+      <div class="formacao-card" id="fc-443" onclick="selecionarFormacao('4-4-2')">
+        <div class="formacao-nome">4-4-2</div>
+        <div class="formacao-desc">Clássico · 2 pontas</div>
+      </div>
+      <div class="formacao-card" id="fc-433" onclick="selecionarFormacao('4-3-3')">
+        <div class="formacao-nome">4-3-3</div>
+        <div class="formacao-desc">Ofensivo · 3 atacantes</div>
+      </div>
+      <div class="formacao-card" id="fc-424" onclick="selecionarFormacao('4-2-4')">
+        <div class="formacao-nome">4-2-4</div>
+        <div class="formacao-desc">Agressivo · 4 na frente</div>
+      </div>
+      <div class="formacao-card" id="fc-352" onclick="selecionarFormacao('3-5-2')">
+        <div class="formacao-nome">3-5-2</div>
+        <div class="formacao-desc">Sólido · 5 no meio</div>
+      </div>
+    </div>
+    <div id="btn-ir-dado" style="display:none;margin-top:8px">
+      <button class="btn btn-gold" onclick="irParaDadoStep()">Sortear time →</button>
+    </div>
+  </div>
+
+  <!-- PASSO 1: DADO -->
+  <div id="dado-content" style="flex:1;display:none;align-items:center;justify-content:center;flex-direction:column;padding:40px;text-align:center">
+    <div id="dado-step-label" class="dado-step">Passo 2 de 2 — Seu time</div>
+    <div class="dado-label">Clique no dado para sortear</div>
+    <div class="dado-box" id="dado-box" onclick="rolarDado()">⚄</div>
+    <div class="dado-result" id="dado-result">
+      <div style="font-family:'Oswald',sans-serif;font-size:12px;color:var(--dim);letter-spacing:2px">Aguardando...</div>
+    </div>
+    <div id="dado-actions" style="margin-top:24px;display:none;flex-direction:column;align-items:center;gap:12px">
+      <button class="btn btn-gold" id="btn-dado-next" onclick="dadoProximo()">Continuar →</button>
+      <button class="btn btn-outline btn-sm" onclick="rolarDado()">Rolar de novo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== TELA ESCALAÇÃO ======== -->
+<div id="screen-escalacao" class="screen">
+  <div class="escalacao-header">
+    <div>
+      <div class="esc-title" id="esc-title">Monte seu time</div>
+      <div class="esc-sub" id="esc-sub">Escolha os jogadores posição a posição</div>
+    </div>
+    <div class="esc-progress" id="esc-progress"></div>
+  </div>
+  <div class="escalacao-body">
+    <div class="campo-side">
+      <div class="campo-label">Escalação</div>
+      <div class="campo" id="campo">
+        <div class="campo-grass"></div>
+        <div class="campo-lines"></div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn btn-gold" id="btn-confirmar" onclick="confirmarEscalacao()" style="display:none">Confirmar escalação →</button>
+      </div>
+    </div>
+    <div class="escolha-side">
+      <div class="escolha-pos" id="escolha-pos-title">—</div>
+      <div class="escolha-hint" id="escolha-hint">Selecione uma posição no campo</div>
+      <div class="jogadores-list" id="jogadores-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== TELA TEMPORADA ======== -->
+<div id="screen-temporada" class="screen">
+  <div class="temp-header">
+    <div>
+      <div class="temp-title" id="temp-title">Temporada</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted)" id="temp-subtitle">38 rodadas pela frente</div>
+    </div>
+    <div class="temp-record">
+      <div class="temp-rec-item"><div class="temp-rec-label">V</div><div class="temp-rec-val win" id="rec-v">0</div></div>
+      <div class="temp-rec-item"><div class="temp-rec-label">E</div><div class="temp-rec-val" id="rec-e">0</div></div>
+      <div class="temp-rec-item"><div class="temp-rec-label">D</div><div class="temp-rec-val lose" id="rec-d">0</div></div>
+      <div class="temp-rec-item"><div class="temp-rec-label">GP</div><div class="temp-rec-val" id="rec-gp">0</div></div>
+      <div class="temp-rec-item"><div class="temp-rec-label">GC</div><div class="temp-rec-val" id="rec-gc">0</div></div>
+    </div>
+  </div>
+  <div class="rodadas-grid" id="rodadas-grid"></div>
+</div>
+
+<!-- ======== TELA SIMULAÇÃO ======== -->
+<div id="screen-simulacao" class="screen">
+  <div class="sim-wrap">
+    <div class="sim-placar-box">
+      <div class="sim-rodada-label" id="sim-rodada-label">Rodada 1</div>
+      <div class="sim-teams">
+        <div class="preview-team" style="text-align:left">
+          <div class="sim-team-name" id="sim-meu-time">—</div>
+          <div class="sim-team-year" id="sim-meu-ano">—</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="sim-score" id="sim-score-meu">0</div>
+          <div class="sim-score-sep">×</div>
+          <div class="sim-score" id="sim-score-adv">0</div>
+        </div>
+        <div class="preview-team" style="text-align:right">
+          <div class="sim-team-name" id="sim-adv-time">—</div>
+          <div class="sim-team-year" id="sim-adv-ano">—</div>
+        </div>
+      </div>
+      <div id="sim-resultado-badge"></div>
+    </div>
+    <div class="sim-gols-box" id="sim-gols-box">
+      <div class="sim-gols-title">Gols da partida</div>
+      <div id="sim-gols-list"></div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-gold" id="btn-proxima-rodada" onclick="proximaRodada()" style="display:none">Próxima rodada →</button>
+      <button class="btn btn-outline" id="btn-ver-temporada" onclick="irParaTemporada()" style="display:none">Ver temporada</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== TELA FIM ======== -->
+<div id="screen-fim" class="screen">
+  <div class="fim-wrap">
+    <div class="ornament">✦ ✦ ✦</div>
+    <div style="height:24px"></div>
+    <div class="fim-titulo" id="fim-titulo">38A0BR</div>
+    <p class="fim-sub" id="fim-sub"></p>
+    <div class="fim-record-box">
+      <div class="fim-stat"><div class="fim-stat-label">Vitórias</div><div class="fim-stat-val" id="fim-v">0</div></div>
+      <div class="fim-stat"><div class="fim-stat-label">Empates</div><div class="fim-stat-val" id="fim-e">0</div></div>
+      <div class="fim-stat"><div class="fim-stat-label">Derrotas</div><div class="fim-stat-val" id="fim-d">0</div></div>
+    </div>
+    <div class="fim-meu-time">
+      <div class="fim-meu-label">Seu time</div>
+      <div class="fim-meu-nome" id="fim-meu-nome">—</div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-gold" onclick="reiniciar()">⚄ &nbsp;Jogar de novo</button>
+      <button class="btn btn-outline" onclick="irParaApoio()">♥ Apoiar</button>
+    </div>
+    <div style="height:24px"></div>
+    <div class="ornament">✦ ✦ ✦</div>
+  </div>
+</div>
+
+<!-- ======== TELA APOIO ======== -->
+<div id="screen-apoio" class="screen">
+  <div class="header">
+    <div class="logo"><div class="logo-main">38A0BR</div><div class="logo-sub">Almanaque</div></div>
+    <button class="btn btn-outline btn-sm" onclick="irParaHome()">← Voltar</button>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px">
+    <div class="apoio-wrap">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div style="height:24px"></div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);letter-spacing:4px;line-height:1">Apoie o Criador</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:16px auto 32px;max-width:360px">
+        O 38A0BR é um projeto independente feito com amor ao futebol brasileiro. Se você curtiu jogar, considere apoiar para manter o almanaque vivo e crescendo.
+      </p>
+
+      <div style="background:var(--darker);border:1px solid var(--brown);padding:28px 24px;margin-bottom:24px">
+        <div style="font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">PIX — Chave Aleatória</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:2px;margin-bottom:16px">Artur Canto</div>
+        <div class="pix-key-box">869091ab-98a8-4daf-b65c-ea4f28df6092</div>
+        <button class="btn btn-gold" onclick="copiarPix()" id="btn-copiar-pix" style="width:100%">Copiar chave PIX</button>
+        <div style="font-family:'Oswald',sans-serif;font-size:10px;color:var(--dim);margin-top:12px;letter-spacing:1px">Abra seu banco → PIX → Chave aleatória → Cole</div>
+      </div>
+
+      <div style="font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:12px">Sugestões de valor</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
+        <div class="valor-pill">R$5</div>
+        <div class="valor-pill">R$10</div>
+        <div class="valor-pill">R$20</div>
+        <div class="valor-pill">R$50</div>
+        <div class="valor-pill">Livre ♥</div>
+      </div>
+
+      <div style="height:8px"></div>
+      <div class="ornament">✦ ✦ ✦</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// BANCO DE DADOS — 76 TIMES
+// ============================================================
+const TIMES = [
+  {time:"Flamengo",ano:1980,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Raul",jogos:380,gols:0},{pos:"RB",nome:"Leandro",jogos:502,gols:21},{pos:"CB",nome:"Marinho",jogos:200,gols:8},{pos:"CB",nome:"Mozer",jogos:250,gols:18},{pos:"LB",nome:"Júnior",jogos:857,gols:73},{pos:"CM",nome:"Andrade",jogos:300,gols:25},{pos:"CM",nome:"Adílio",jogos:400,gols:70},{pos:"MEI",nome:"Zico",jogos:731,gols:508},{pos:"RW",nome:"Tita",jogos:200,gols:60},{pos:"ST",nome:"Nunes",jogos:150,gols:90},{pos:"LW",nome:"Lico",jogos:250,gols:60}]},
+  {time:"Flamengo",ano:1982,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Raul",jogos:380,gols:0},{pos:"RB",nome:"Leandro",jogos:502,gols:21},{pos:"CB",nome:"Marinho",jogos:200,gols:8},{pos:"CB",nome:"Mozer",jogos:250,gols:18},{pos:"LB",nome:"Júnior",jogos:857,gols:73},{pos:"CM",nome:"Andrade",jogos:300,gols:25},{pos:"CM",nome:"Adílio",jogos:400,gols:70},{pos:"MEI",nome:"Zico",jogos:731,gols:508},{pos:"RW",nome:"Tita",jogos:200,gols:60},{pos:"ST",nome:"Nunes",jogos:150,gols:90},{pos:"LW",nome:"Lico",jogos:250,gols:60}]},
+  {time:"Flamengo",ano:2019,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Diego Alves",jogos:180,gols:0},{pos:"RB",nome:"Rafinha",jogos:120,gols:6},{pos:"CB",nome:"Pablo Marí",jogos:30,gols:2},{pos:"CB",nome:"Rodrigo Caio",jogos:130,gols:6},{pos:"LB",nome:"Filipe Luís",jogos:180,gols:8},{pos:"CM",nome:"Willian Arão",jogos:280,gols:18},{pos:"CM",nome:"Gerson",jogos:200,gols:30},{pos:"MEI",nome:"De Arrascaeta",jogos:280,gols:75},{pos:"RW",nome:"Bruno Henrique",jogos:350,gols:120},{pos:"ST",nome:"Gabigol",jogos:300,gols:160},{pos:"LW",nome:"Everton Ribeiro",jogos:350,gols:50}]},
+  {time:"Flamengo",ano:2022,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Santos",jogos:90,gols:0},{pos:"RB",nome:"Rodinei",jogos:200,gols:6},{pos:"CB",nome:"David Luiz",jogos:110,gols:6},{pos:"CB",nome:"Léo Pereira",jogos:180,gols:10},{pos:"LB",nome:"Filipe Luís",jogos:180,gols:8},{pos:"CM",nome:"Thiago Maia",jogos:130,gols:5},{pos:"CM",nome:"João Gomes",jogos:130,gols:8},{pos:"MEI",nome:"De Arrascaeta",jogos:280,gols:75},{pos:"RW",nome:"Bruno Henrique",jogos:350,gols:120},{pos:"ST",nome:"Pedro",jogos:250,gols:130},{pos:"LW",nome:"Everton Ribeiro",jogos:350,gols:50}]},
+  {time:"Corinthians",ano:1999,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Dida",jogos:130,gols:0},{pos:"RB",nome:"Índio",jogos:150,gols:5},{pos:"CB",nome:"João Carlos",jogos:120,gols:6},{pos:"CB",nome:"Antônio Carlos",jogos:200,gols:12},{pos:"LB",nome:"Kléber",jogos:150,gols:8},{pos:"CM",nome:"Vampeta",jogos:180,gols:15},{pos:"CM",nome:"Ricardinho",jogos:200,gols:40},{pos:"MEI",nome:"Rincón",jogos:120,gols:18},{pos:"RW",nome:"Edílson",jogos:180,gols:60},{pos:"ST",nome:"Luizão",jogos:130,gols:60},{pos:"LW",nome:"Marcelinho Carioca",jogos:433,gols:206}]},
+  {time:"Corinthians",ano:2005,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Fábio Costa",jogos:200,gols:0},{pos:"RB",nome:"Coelho",jogos:100,gols:3},{pos:"CB",nome:"Marinho",jogos:80,gols:4},{pos:"CB",nome:"Betão",jogos:90,gols:6},{pos:"LB",nome:"Gustavo Nery",jogos:60,gols:4},{pos:"CM",nome:"Marcelo Mattos",jogos:80,gols:4},{pos:"CM",nome:"Roger",jogos:70,gols:10},{pos:"MEI",nome:"Carlos Tévez",jogos:46,gols:25},{pos:"RW",nome:"Carlitos",jogos:50,gols:12},{pos:"ST",nome:"Nilmar",jogos:50,gols:20},{pos:"LW",nome:"Carlos Alberto",jogos:60,gols:15}]},
+  {time:"Corinthians",ano:2011,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Júlio César",jogos:100,gols:0},{pos:"RB",nome:"Alessandro",jogos:200,gols:8},{pos:"CB",nome:"Chicão",jogos:250,gols:20},{pos:"CB",nome:"Leandro Castán",jogos:130,gols:8},{pos:"LB",nome:"Fábio Santos",jogos:250,gols:30},{pos:"CM",nome:"Ralf",jogos:300,gols:8},{pos:"CM",nome:"Paulinho",jogos:150,gols:30},{pos:"MEI",nome:"Danilo",jogos:200,gols:30},{pos:"RW",nome:"Jorge Henrique",jogos:200,gols:30},{pos:"ST",nome:"Liedson",jogos:70,gols:30},{pos:"LW",nome:"Emerson Sheik",jogos:130,gols:35}]},
+  {time:"Corinthians",ano:2017,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Cássio",jogos:700,gols:0},{pos:"RB",nome:"Fagner",jogos:400,gols:15},{pos:"CB",nome:"Balbuena",jogos:130,gols:12},{pos:"CB",nome:"Pablo",jogos:100,gols:8},{pos:"LB",nome:"Guilherme Arana",jogos:80,gols:4},{pos:"CM",nome:"Gabriel",jogos:200,gols:12},{pos:"CM",nome:"Maycon",jogos:130,gols:8},{pos:"MEI",nome:"Rodriguinho",jogos:200,gols:35},{pos:"RW",nome:"Romero",jogos:200,gols:40},{pos:"ST",nome:"Jô",jogos:120,gols:50},{pos:"LW",nome:"Clayson",jogos:100,gols:18}]},
+  {time:"Palmeiras",ano:1973,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Leão",jogos:300,gols:0},{pos:"RB",nome:"Eurico",jogos:200,gols:8},{pos:"CB",nome:"Luís Pereira",jogos:350,gols:25},{pos:"CB",nome:"Alfredo Mostarda",jogos:250,gols:10},{pos:"LB",nome:"Zé Maria",jogos:200,gols:10},{pos:"CM",nome:"Dudu",jogos:500,gols:80},{pos:"CM",nome:"Nei",jogos:200,gols:12},{pos:"MEI",nome:"Ademir da Guia",jogos:901,gols:153},{pos:"RW",nome:"Edu",jogos:350,gols:120},{pos:"ST",nome:"César Maluco",jogos:250,gols:130},{pos:"LW",nome:"Leivinha",jogos:200,gols:90}]},
+  {time:"Palmeiras",ano:1994,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Velloso",jogos:200,gols:0},{pos:"RB",nome:"Antônio Carlos",jogos:150,gols:10},{pos:"CB",nome:"Cléber",jogos:130,gols:8},{pos:"CB",nome:"Tonhão",jogos:100,gols:6},{pos:"LB",nome:"Roberto Carlos",jogos:130,gols:12},{pos:"CM",nome:"Amaral",jogos:200,gols:15},{pos:"CM",nome:"Mazinho",jogos:100,gols:8},{pos:"MEI",nome:"Zinho",jogos:200,gols:30},{pos:"RW",nome:"Rivaldo",jogos:100,gols:50},{pos:"ST",nome:"Edmundo",jogos:120,gols:65},{pos:"LW",nome:"Evair",jogos:200,gols:100}]},
+  {time:"Palmeiras",ano:2018,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Weverton",jogos:350,gols:0},{pos:"RB",nome:"Marcos Rocha",jogos:300,gols:8},{pos:"CB",nome:"Antônio Carlos",jogos:130,gols:10},{pos:"CB",nome:"Gustavo Gómez",jogos:300,gols:30},{pos:"LB",nome:"Diogo Barbosa",jogos:100,gols:4},{pos:"CM",nome:"Felipe Melo",jogos:200,gols:8},{pos:"CM",nome:"Bruno Henrique",jogos:250,gols:15},{pos:"MEI",nome:"Lucas Lima",jogos:150,gols:12},{pos:"RW",nome:"Dudu",jogos:400,gols:75},{pos:"ST",nome:"Borja",jogos:130,gols:45},{pos:"LW",nome:"Willian",jogos:250,gols:50}]},
+  {time:"Palmeiras",ano:2023,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Weverton",jogos:350,gols:0},{pos:"RB",nome:"Marcos Rocha",jogos:300,gols:8},{pos:"CB",nome:"Gustavo Gómez",jogos:300,gols:30},{pos:"CB",nome:"Murilo",jogos:150,gols:12},{pos:"LB",nome:"Piquerez",jogos:180,gols:12},{pos:"CM",nome:"Zé Rafael",jogos:250,gols:25},{pos:"CM",nome:"Richard Ríos",jogos:80,gols:8},{pos:"MEI",nome:"Raphael Veiga",jogos:280,gols:80},{pos:"RW",nome:"Rony",jogos:300,gols:70},{pos:"ST",nome:"Endrick",jogos:80,gols:25},{pos:"LW",nome:"Dudu",jogos:400,gols:75}]},
+  {time:"Fluminense",ano:1970,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Félix",jogos:333,gols:0},{pos:"RB",nome:"Carlos Alberto",jogos:250,gols:15},{pos:"CB",nome:"Assis",jogos:200,gols:8},{pos:"CB",nome:"Vilson Tadei",jogos:200,gols:6},{pos:"LB",nome:"Marco Antônio",jogos:250,gols:18},{pos:"CM",nome:"Denilson",jogos:200,gols:12},{pos:"CM",nome:"Lula",jogos:200,gols:25},{pos:"MEI",nome:"Cafuringa",jogos:250,gols:90},{pos:"RW",nome:"Flávio",jogos:200,gols:80},{pos:"ST",nome:"Toninho Guerreiro",jogos:100,gols:50},{pos:"LW",nome:"Gérson",jogos:80,gols:15}]},
+  {time:"Fluminense",ano:1984,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Paulo Vítor",jogos:300,gols:0},{pos:"RB",nome:"Aldo",jogos:150,gols:6},{pos:"CB",nome:"Duílio",jogos:200,gols:10},{pos:"CB",nome:"Edinho",jogos:250,gols:20},{pos:"LB",nome:"Branco",jogos:150,gols:20},{pos:"CM",nome:"Vivinho",jogos:130,gols:12},{pos:"CM",nome:"Delei",jogos:200,gols:25},{pos:"MEI",nome:"Assis",jogos:200,gols:40},{pos:"RW",nome:"Romerito",jogos:130,gols:35},{pos:"ST",nome:"Washington",jogos:150,gols:70},{pos:"LW",nome:"Tato",jogos:130,gols:30}]},
+  {time:"Fluminense",ano:2010,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Fernando Henrique",jogos:150,gols:0},{pos:"RB",nome:"Mariano",jogos:150,gols:8},{pos:"CB",nome:"Gum",jogos:250,gols:25},{pos:"CB",nome:"Leandro Euzébio",jogos:130,gols:10},{pos:"LB",nome:"Carlinhos",jogos:120,gols:10},{pos:"CM",nome:"Diguinho",jogos:130,gols:8},{pos:"CM",nome:"Deco",jogos:60,gols:6},{pos:"MEI",nome:"Conca",jogos:130,gols:30},{pos:"RW",nome:"Washington",jogos:80,gols:35},{pos:"ST",nome:"Fred",jogos:300,gols:180},{pos:"LW",nome:"Marcão",jogos:100,gols:25}]},
+  {time:"Fluminense",ano:2023,formacao:"4-2-3-1",jogadores:[{pos:"GK",nome:"Fábio",jogos:180,gols:0},{pos:"RB",nome:"Samuel Xavier",jogos:130,gols:8},{pos:"CB",nome:"Nino",jogos:200,gols:18},{pos:"CB",nome:"Felipe Melo",jogos:130,gols:6},{pos:"LB",nome:"Marcelo",jogos:80,gols:4},{pos:"CM",nome:"André",jogos:180,gols:12},{pos:"CM",nome:"Martinelli",jogos:200,gols:12},{pos:"MEI",nome:"Ganso",jogos:130,gols:20},{pos:"RW",nome:"Jhon Arias",jogos:180,gols:30},{pos:"ST",nome:"Germán Cano",jogos:130,gols:90},{pos:"LW",nome:"Keno",jogos:130,gols:25}]},
+  {time:"Santos",ano:1962,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Gilmar",jogos:480,gols:0},{pos:"RB",nome:"Lima",jogos:300,gols:10},{pos:"CB",nome:"Mauro Ramos",jogos:450,gols:12},{pos:"CB",nome:"Calvet",jogos:200,gols:6},{pos:"LB",nome:"Dalmo",jogos:250,gols:8},{pos:"CM",nome:"Zito",jogos:730,gols:50},{pos:"CM",nome:"Mengálvio",jogos:400,gols:60},{pos:"MEI",nome:"Pelé",jogos:1116,gols:1091},{pos:"RW",nome:"Dorval",jogos:600,gols:200},{pos:"ST",nome:"Coutinho",jogos:460,gols:370},{pos:"LW",nome:"Pepe",jogos:750,gols:405}]},
+  {time:"Santos",ano:1965,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Gilmar",jogos:480,gols:0},{pos:"RB",nome:"Carlos Alberto",jogos:440,gols:30},{pos:"CB",nome:"Mauro Ramos",jogos:450,gols:12},{pos:"CB",nome:"Ramos Delgado",jogos:200,gols:8},{pos:"LB",nome:"Geraldino",jogos:200,gols:6},{pos:"CM",nome:"Zito",jogos:730,gols:50},{pos:"CM",nome:"Mengálvio",jogos:400,gols:60},{pos:"MEI",nome:"Pelé",jogos:1116,gols:1091},{pos:"RW",nome:"Dorval",jogos:600,gols:200},{pos:"ST",nome:"Toninho Guerreiro",jogos:250,gols:130},{pos:"LW",nome:"Pepe",jogos:750,gols:405}]},
+  {time:"Santos",ano:2002,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Júlio Sérgio",jogos:80,gols:0},{pos:"RB",nome:"Maurinho",jogos:100,gols:4},{pos:"CB",nome:"Alex",jogos:150,gols:12},{pos:"CB",nome:"André Léo",jogos:130,gols:8},{pos:"LB",nome:"Léo",jogos:250,gols:15},{pos:"CM",nome:"Renato",jogos:200,gols:20},{pos:"CM",nome:"Fabinho",jogos:80,gols:4},{pos:"MEI",nome:"Diego",jogos:130,gols:35},{pos:"RW",nome:"Elano",jogos:200,gols:50},{pos:"ST",nome:"William",jogos:100,gols:40},{pos:"LW",nome:"Robinho",jogos:200,gols:100}]},
+  {time:"Santos",ano:2004,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Fábio Costa",jogos:150,gols:0},{pos:"RB",nome:"Adailton",jogos:100,gols:4},{pos:"CB",nome:"André Léo",jogos:130,gols:8},{pos:"CB",nome:"Pereira",jogos:100,gols:6},{pos:"LB",nome:"Léo",jogos:250,gols:15},{pos:"CM",nome:"Renato",jogos:200,gols:20},{pos:"CM",nome:"Fabinho",jogos:80,gols:4},{pos:"MEI",nome:"Diego",jogos:130,gols:35},{pos:"RW",nome:"Elano",jogos:200,gols:50},{pos:"ST",nome:"Deivid",jogos:100,gols:40},{pos:"LW",nome:"Robinho",jogos:200,gols:100}]},
+  {time:"São Paulo",ano:1977,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Waldir Peres",jogos:350,gols:0},{pos:"RB",nome:"Getúlio",jogos:200,gols:6},{pos:"CB",nome:"Chicão",jogos:250,gols:12},{pos:"CB",nome:"Zé Carlos",jogos:200,gols:8},{pos:"LB",nome:"Teodoro",jogos:150,gols:6},{pos:"CM",nome:"Pita",jogos:250,gols:40},{pos:"CM",nome:"Zé Sérgio",jogos:250,gols:50},{pos:"MEI",nome:"Mirandinha",jogos:200,gols:60},{pos:"RW",nome:"Terto",jogos:150,gols:40},{pos:"ST",nome:"Serginho Chulapa",jogos:300,gols:240},{pos:"LW",nome:"Chicão Oliveira",jogos:130,gols:25}]},
+  {time:"São Paulo",ano:1992,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Zetti",jogos:350,gols:0},{pos:"RB",nome:"Cafu",jogos:230,gols:12},{pos:"CB",nome:"Ronaldão",jogos:200,gols:15},{pos:"CB",nome:"Adílson",jogos:200,gols:8},{pos:"LB",nome:"Ronaldo Luiz",jogos:150,gols:6},{pos:"CM",nome:"Pintado",jogos:200,gols:12},{pos:"CM",nome:"Dinho",jogos:130,gols:8},{pos:"MEI",nome:"Raí",jogos:287,gols:127},{pos:"RW",nome:"Müller",jogos:250,gols:90},{pos:"ST",nome:"Palhinha",jogos:130,gols:70},{pos:"LW",nome:"Macedo",jogos:130,gols:30}]},
+  {time:"São Paulo",ano:2006,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Rogério Ceni",jogos:1237,gols:131},{pos:"RB",nome:"Cicinho",jogos:100,gols:10},{pos:"CB",nome:"Fabão",jogos:200,gols:12},{pos:"CB",nome:"Lugano",jogos:230,gols:25},{pos:"LB",nome:"Júnior",jogos:200,gols:12},{pos:"CM",nome:"Mineiro",jogos:150,gols:12},{pos:"CM",nome:"Josué",jogos:200,gols:18},{pos:"MEI",nome:"Souza",jogos:150,gols:30},{pos:"RW",nome:"Aloísio",jogos:130,gols:50},{pos:"ST",nome:"Lenílson",jogos:100,gols:20},{pos:"LW",nome:"Dagoberto",jogos:200,gols:60}]},
+  {time:"São Paulo",ano:2008,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Rogério Ceni",jogos:1237,gols:131},{pos:"RB",nome:"Jorge Wagner",jogos:130,gols:25},{pos:"CB",nome:"Miranda",jogos:200,gols:20},{pos:"CB",nome:"Alex Silva",jogos:130,gols:8},{pos:"LB",nome:"Júnior",jogos:200,gols:12},{pos:"CM",nome:"Hernanes",jogos:190,gols:40},{pos:"CM",nome:"Josué",jogos:200,gols:18},{pos:"MEI",nome:"Hugo",jogos:100,gols:12},{pos:"RW",nome:"Dagoberto",jogos:200,gols:60},{pos:"ST",nome:"Borges",jogos:100,gols:45},{pos:"LW",nome:"André Dias",jogos:100,gols:8}]},
+  {time:"Botafogo",ano:1962,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Manga",jogos:250,gols:0},{pos:"RB",nome:"Joel",jogos:200,gols:8},{pos:"CB",nome:"Nilton Santos",jogos:723,gols:13},{pos:"CB",nome:"Zé Maria",jogos:200,gols:8},{pos:"LB",nome:"Rildo",jogos:200,gols:12},{pos:"CM",nome:"Quarentinha",jogos:350,gols:150},{pos:"CM",nome:"Didi",jogos:300,gols:80},{pos:"MEI",nome:"Garrincha",jogos:581,gols:232},{pos:"RW",nome:"Amarildo",jogos:200,gols:100},{pos:"ST",nome:"Amarildo",jogos:200,gols:100},{pos:"LW",nome:"Zagallo",jogos:430,gols:130}]},
+  {time:"Botafogo",ano:1968,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Manga",jogos:250,gols:0},{pos:"RB",nome:"Valtencir",jogos:150,gols:6},{pos:"CB",nome:"Moreira",jogos:200,gols:8},{pos:"CB",nome:"Leônidas",jogos:150,gols:6},{pos:"LB",nome:"Rildo",jogos:200,gols:12},{pos:"CM",nome:"Carlos Roberto",jogos:150,gols:12},{pos:"CM",nome:"Afonsinho",jogos:130,gols:12},{pos:"MEI",nome:"Gérson",jogos:250,gols:50},{pos:"RW",nome:"Jairzinho",jogos:413,gols:186},{pos:"ST",nome:"Roberto Miranda",jogos:150,gols:80},{pos:"LW",nome:"Paulo César",jogos:200,gols:60}]},
+  {time:"Botafogo",ano:1995,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Wágner",jogos:150,gols:0},{pos:"RB",nome:"Gonçalves",jogos:200,gols:18},{pos:"CB",nome:"Wilson Gottardo",jogos:150,gols:8},{pos:"CB",nome:"Carlos Alberto Dias",jogos:130,gols:6},{pos:"LB",nome:"Sérgio Manoel",jogos:200,gols:30},{pos:"CM",nome:"Cocada",jogos:100,gols:8},{pos:"CM",nome:"Valdeir",jogos:100,gols:15},{pos:"MEI",nome:"Donizete",jogos:100,gols:50},{pos:"RW",nome:"Wilson Mineiro",jogos:100,gols:25},{pos:"ST",nome:"Túlio",jogos:200,gols:120},{pos:"LW",nome:"Paulinho McLaren",jogos:80,gols:25}]},
+  {time:"Botafogo",ano:2024,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"John",jogos:60,gols:0},{pos:"RB",nome:"Mateus Ponte",jogos:40,gols:2},{pos:"CB",nome:"Bastos",jogos:80,gols:6},{pos:"CB",nome:"Adryelson",jogos:80,gols:6},{pos:"LB",nome:"Alex Telles",jogos:40,gols:3},{pos:"CM",nome:"Marlon Freitas",jogos:80,gols:6},{pos:"CM",nome:"Gregore",jogos:60,gols:4},{pos:"MEI",nome:"Almada",jogos:40,gols:12},{pos:"RW",nome:"Luiz Henrique",jogos:60,gols:20},{pos:"ST",nome:"Igor Jesus",jogos:40,gols:15},{pos:"LW",nome:"Júnior Santos",jogos:80,gols:25}]},
+  {time:"Vasco",ano:1974,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Andrada",jogos:200,gols:0},{pos:"RB",nome:"Zé Mário",jogos:200,gols:8},{pos:"CB",nome:"Miguel",jogos:150,gols:6},{pos:"CB",nome:"Luna",jogos:300,gols:15},{pos:"LB",nome:"Marco Antônio",jogos:150,gols:10},{pos:"CM",nome:"Alcir",jogos:200,gols:25},{pos:"CM",nome:"Carbone",jogos:150,gols:12},{pos:"MEI",nome:"Roberto Dinamite",jogos:1110,gols:698},{pos:"RW",nome:"Jorginho Carvoeiro",jogos:150,gols:40},{pos:"ST",nome:"Ademir",jogos:130,gols:60},{pos:"LW",nome:"Zanata",jogos:130,gols:30}]},
+  {time:"Vasco",ano:1989,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Acácio",jogos:400,gols:0},{pos:"RB",nome:"Paulo Roberto",jogos:200,gols:8},{pos:"CB",nome:"Geovani Silva",jogos:150,gols:6},{pos:"CB",nome:"Mauro Galvão",jogos:300,gols:20},{pos:"LB",nome:"Mazinho",jogos:130,gols:8},{pos:"CM",nome:"William",jogos:150,gols:12},{pos:"CM",nome:"Luís Carlos Winck",jogos:130,gols:10},{pos:"MEI",nome:"Geovani",jogos:250,gols:60},{pos:"RW",nome:"Bismarck",jogos:200,gols:50},{pos:"ST",nome:"Romário",jogos:130,gols:73},{pos:"LW",nome:"Sorato",jogos:130,gols:30}]},
+  {time:"Vasco",ano:1997,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Carlos Germano",jogos:250,gols:0},{pos:"RB",nome:"Paulo Roberto",jogos:200,gols:8},{pos:"CB",nome:"Mauro Galvão",jogos:300,gols:20},{pos:"CB",nome:"Odvan",jogos:130,gols:8},{pos:"LB",nome:"Felipe",jogos:200,gols:30},{pos:"CM",nome:"Nasa",jogos:130,gols:8},{pos:"CM",nome:"Luisinho",jogos:130,gols:12},{pos:"MEI",nome:"Juninho Pernambucano",jogos:200,gols:60},{pos:"RW",nome:"Pedrinho",jogos:130,gols:30},{pos:"ST",nome:"Edmundo",jogos:150,gols:80},{pos:"LW",nome:"Donizete",jogos:130,gols:50}]},
+  {time:"Vasco",ano:2000,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Hélton",jogos:100,gols:0},{pos:"RB",nome:"Russo",jogos:130,gols:8},{pos:"CB",nome:"Mauro Galvão",jogos:300,gols:20},{pos:"CB",nome:"Odvan",jogos:130,gols:8},{pos:"LB",nome:"Gilberto",jogos:130,gols:10},{pos:"CM",nome:"Amaral",jogos:130,gols:8},{pos:"CM",nome:"Juninho Pernambucano",jogos:200,gols:60},{pos:"MEI",nome:"Pedrinho",jogos:130,gols:30},{pos:"RW",nome:"Euller",jogos:130,gols:50},{pos:"ST",nome:"Romário",jogos:130,gols:73},{pos:"LW",nome:"Viola",jogos:80,gols:30}]},
+  {time:"Cruzeiro",ano:1966,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Raul",jogos:200,gols:0},{pos:"RB",nome:"Pedro Paulo",jogos:200,gols:8},{pos:"CB",nome:"Procópio",jogos:250,gols:10},{pos:"CB",nome:"William",jogos:200,gols:8},{pos:"LB",nome:"Eustáquio",jogos:150,gols:6},{pos:"CM",nome:"Zé Carlos",jogos:150,gols:12},{pos:"CM",nome:"Piazza",jogos:450,gols:30},{pos:"MEI",nome:"Tostão",jogos:350,gols:200},{pos:"RW",nome:"Natal",jogos:200,gols:70},{pos:"ST",nome:"Evaldo",jogos:150,gols:80},{pos:"LW",nome:"Dirceu Lopes",jogos:550,gols:250}]},
+  {time:"Cruzeiro",ano:2003,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Gomes",jogos:130,gols:0},{pos:"RB",nome:"Maicon",jogos:100,gols:10},{pos:"CB",nome:"Edu Dracena",jogos:130,gols:8},{pos:"CB",nome:"Cris",jogos:150,gols:12},{pos:"LB",nome:"Leonardo",jogos:150,gols:18},{pos:"CM",nome:"Ricardinho",jogos:130,gols:15},{pos:"CM",nome:"Augusto Recife",jogos:100,gols:8},{pos:"MEI",nome:"Alex",jogos:200,gols:80},{pos:"RW",nome:"Jardel",jogos:80,gols:30},{pos:"ST",nome:"Deivid",jogos:100,gols:50},{pos:"LW",nome:"Mota",jogos:100,gols:30}]},
+  {time:"Cruzeiro",ano:2013,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Fábio",jogos:950,gols:0},{pos:"RB",nome:"Mayke",jogos:130,gols:8},{pos:"CB",nome:"Dedé",jogos:200,gols:25},{pos:"CB",nome:"Bruno Rodrigo",jogos:130,gols:10},{pos:"LB",nome:"Egídio",jogos:130,gols:8},{pos:"CM",nome:"Lucas Silva",jogos:130,gols:6},{pos:"CM",nome:"Nilton",jogos:200,gols:8},{pos:"MEI",nome:"Ricardo Goulart",jogos:120,gols:45},{pos:"RW",nome:"Júlio Baptista",jogos:60,gols:15},{pos:"ST",nome:"Borges",jogos:100,gols:45},{pos:"LW",nome:"Everton Ribeiro",jogos:130,gols:30}]},
+  {time:"Cruzeiro",ano:2014,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Fábio",jogos:950,gols:0},{pos:"RB",nome:"Mayke",jogos:130,gols:8},{pos:"CB",nome:"Dedé",jogos:200,gols:25},{pos:"CB",nome:"Bruno Rodrigo",jogos:130,gols:10},{pos:"LB",nome:"Egídio",jogos:130,gols:8},{pos:"CM",nome:"Henrique",jogos:200,gols:12},{pos:"CM",nome:"Lucas Silva",jogos:130,gols:6},{pos:"MEI",nome:"Ricardo Goulart",jogos:120,gols:45},{pos:"RW",nome:"Everton Ribeiro",jogos:130,gols:30},{pos:"ST",nome:"Marcelo Moreno",jogos:180,gols:70},{pos:"LW",nome:"Willian",jogos:100,gols:25}]},
+  {time:"Atlético-MG",ano:1971,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Renato",jogos:250,gols:0},{pos:"RB",nome:"Vanderlei",jogos:200,gols:8},{pos:"CB",nome:"Humberto Monteiro",jogos:200,gols:8},{pos:"CB",nome:"Grapete",jogos:200,gols:6},{pos:"LB",nome:"Vantuir",jogos:200,gols:10},{pos:"CM",nome:"Luís Pereira",jogos:150,gols:15},{pos:"CM",nome:"Vaná",jogos:200,gols:25},{pos:"MEI",nome:"Oldair",jogos:200,gols:40},{pos:"RW",nome:"Ronaldo",jogos:200,gols:60},{pos:"ST",nome:"Dadá Maravilha",jogos:250,gols:200},{pos:"LW",nome:"Marcelo Oliveira",jogos:150,gols:30}]},
+  {time:"Atlético-MG",ano:1996,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Taffarel",jogos:130,gols:0},{pos:"RB",nome:"Marcos Paulo",jogos:130,gols:8},{pos:"CB",nome:"Gílson",jogos:130,gols:6},{pos:"CB",nome:"Wágner",jogos:150,gols:10},{pos:"LB",nome:"Cláudio Milar",jogos:100,gols:6},{pos:"CM",nome:"Marquinhos",jogos:130,gols:8},{pos:"CM",nome:"Doriva",jogos:130,gols:10},{pos:"MEI",nome:"Marques",jogos:200,gols:60},{pos:"RW",nome:"Renaldo",jogos:130,gols:40},{pos:"ST",nome:"Valdir Bigode",jogos:100,gols:40},{pos:"LW",nome:"Sérgio",jogos:100,gols:18}]},
+  {time:"Atlético-MG",ano:2012,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Victor",jogos:300,gols:0},{pos:"RB",nome:"Marcos Rocha",jogos:200,gols:8},{pos:"CB",nome:"Réver",jogos:200,gols:18},{pos:"CB",nome:"Leonardo Silva",jogos:250,gols:15},{pos:"LB",nome:"Richarlyson",jogos:130,gols:8},{pos:"CM",nome:"Leandro Donizete",jogos:150,gols:8},{pos:"CM",nome:"Pierre",jogos:150,gols:6},{pos:"MEI",nome:"Ronaldinho Gaúcho",jogos:90,gols:25},{pos:"RW",nome:"Bernard",jogos:130,gols:25},{pos:"ST",nome:"Jô",jogos:150,gols:60},{pos:"LW",nome:"Guilherme",jogos:130,gols:40}]},
+  {time:"Atlético-MG",ano:2021,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Everson",jogos:200,gols:0},{pos:"RB",nome:"Guga",jogos:130,gols:6},{pos:"CB",nome:"Junior Alonso",jogos:150,gols:8},{pos:"CB",nome:"Nathan Silva",jogos:130,gols:8},{pos:"LB",nome:"Guilherme Arana",jogos:180,gols:15},{pos:"CM",nome:"Allan",jogos:100,gols:6},{pos:"CM",nome:"Jair",jogos:130,gols:8},{pos:"MEI",nome:"Nacho Fernández",jogos:130,gols:25},{pos:"RW",nome:"Savarino",jogos:100,gols:18},{pos:"ST",nome:"Hulk",jogos:200,gols:100},{pos:"LW",nome:"Keno",jogos:200,gols:50}]},
+  {time:"Internacional",ano:1975,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Manga",jogos:200,gols:0},{pos:"RB",nome:"Cláudio",jogos:200,gols:8},{pos:"CB",nome:"Figueroa",jogos:250,gols:20},{pos:"CB",nome:"Vacaria",jogos:200,gols:8},{pos:"LB",nome:"Mauro Pastor",jogos:200,gols:10},{pos:"CM",nome:"Falcão",jogos:300,gols:50},{pos:"CM",nome:"Caçapava",jogos:200,gols:18},{pos:"MEI",nome:"Carpegiani",jogos:250,gols:40},{pos:"RW",nome:"Valdomiro",jogos:400,gols:90},{pos:"ST",nome:"Flávio Minuano",jogos:150,gols:70},{pos:"LW",nome:"Dario",jogos:130,gols:80}]},
+  {time:"Internacional",ano:1979,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Benítez",jogos:200,gols:0},{pos:"RB",nome:"Tarciso",jogos:200,gols:25},{pos:"CB",nome:"Figueroa",jogos:250,gols:20},{pos:"CB",nome:"Mauro Pastor",jogos:200,gols:10},{pos:"LB",nome:"Vacaria",jogos:200,gols:8},{pos:"CM",nome:"Falcão",jogos:300,gols:50},{pos:"CM",nome:"Batista",jogos:200,gols:20},{pos:"MEI",nome:"Carpegiani",jogos:250,gols:40},{pos:"RW",nome:"Valdomiro",jogos:400,gols:90},{pos:"ST",nome:"Chico Spina",jogos:100,gols:50},{pos:"LW",nome:"Bira",jogos:130,gols:30}]},
+  {time:"Internacional",ano:2006,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Clemer",jogos:200,gols:0},{pos:"RB",nome:"Ceará",jogos:130,gols:8},{pos:"CB",nome:"Índio",jogos:250,gols:18},{pos:"CB",nome:"Fabiano Eller",jogos:130,gols:8},{pos:"LB",nome:"Wellington Monteiro",jogos:130,gols:6},{pos:"CM",nome:"Wilhelmsson",jogos:60,gols:8},{pos:"CM",nome:"Edinho",jogos:150,gols:10},{pos:"MEI",nome:"Alex",jogos:100,gols:20},{pos:"RW",nome:"Rafael Sóbis",jogos:200,gols:70},{pos:"ST",nome:"Fernandão",jogos:150,gols:50},{pos:"LW",nome:"Iarley",jogos:100,gols:25}]},
+  {time:"Internacional",ano:2009,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Lauro",jogos:100,gols:0},{pos:"RB",nome:"Nei",jogos:130,gols:8},{pos:"CB",nome:"Bolívar",jogos:200,gols:18},{pos:"CB",nome:"Índio",jogos:250,gols:18},{pos:"LB",nome:"Kléber",jogos:130,gols:12},{pos:"CM",nome:"Sandro",jogos:100,gols:8},{pos:"CM",nome:"Guiñazu",jogos:200,gols:18},{pos:"MEI",nome:"Andrés D'Alessandro",jogos:380,gols:80},{pos:"RW",nome:"Taison",jogos:130,gols:30},{pos:"ST",nome:"Alecsandro",jogos:100,gols:45},{pos:"LW",nome:"Giuliano",jogos:130,gols:30}]},
+  {time:"Grêmio",ano:1981,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Mazarópi",jogos:250,gols:0},{pos:"RB",nome:"China",jogos:200,gols:8},{pos:"CB",nome:"Casemiro Mior",jogos:200,gols:8},{pos:"CB",nome:"De León",jogos:200,gols:20},{pos:"LB",nome:"Paulo Roberto",jogos:200,gols:12},{pos:"CM",nome:"Caio",jogos:200,gols:18},{pos:"CM",nome:"Osvaldo",jogos:150,gols:12},{pos:"MEI",nome:"Tarciso",jogos:250,gols:50},{pos:"RW",nome:"Tita",jogos:130,gols:40},{pos:"ST",nome:"Baltazar",jogos:150,gols:90},{pos:"LW",nome:"Paulo Isidoro",jogos:200,gols:50}]},
+  {time:"Grêmio",ano:1996,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Danrlei",jogos:350,gols:0},{pos:"RB",nome:"Arce",jogos:250,gols:18},{pos:"CB",nome:"Adílson",jogos:200,gols:10},{pos:"CB",nome:"Rivarola",jogos:130,gols:8},{pos:"LB",nome:"Roger",jogos:150,gols:10},{pos:"CM",nome:"Dinho",jogos:200,gols:18},{pos:"CM",nome:"Goiano",jogos:150,gols:8},{pos:"MEI",nome:"Carlos Miguel",jogos:130,gols:18},{pos:"RW",nome:"Paulo Nunes",jogos:100,gols:40},{pos:"ST",nome:"Jardel",jogos:180,gols:130},{pos:"LW",nome:"Magno Alves",jogos:100,gols:35}]},
+  {time:"Grêmio",ano:2017,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Marcelo Grohe",jogos:400,gols:0},{pos:"RB",nome:"Edílson",jogos:150,gols:10},{pos:"CB",nome:"Pedro Geromel",jogos:350,gols:15},{pos:"CB",nome:"Kannemann",jogos:300,gols:12},{pos:"LB",nome:"Bruno Cortez",jogos:200,gols:8},{pos:"CM",nome:"Maicon",jogos:250,gols:20},{pos:"CM",nome:"Arthur",jogos:80,gols:6},{pos:"MEI",nome:"Ramiro",jogos:200,gols:25},{pos:"RW",nome:"Everton Cebolinha",jogos:200,gols:70},{pos:"ST",nome:"Lucas Barrios",jogos:60,gols:20},{pos:"LW",nome:"Luan",jogos:250,gols:60}]},
+  {time:"Grêmio",ano:2020,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Vanderlei",jogos:100,gols:0},{pos:"RB",nome:"Victor Ferraz",jogos:150,gols:8},{pos:"CB",nome:"Pedro Geromel",jogos:350,gols:15},{pos:"CB",nome:"Kannemann",jogos:300,gols:12},{pos:"LB",nome:"Cortez",jogos:200,gols:8},{pos:"CM",nome:"Maicon",jogos:250,gols:20},{pos:"CM",nome:"Matheus Henrique",jogos:130,gols:8},{pos:"MEI",nome:"Jean Pyerre",jogos:100,gols:18},{pos:"RW",nome:"Pepê",jogos:130,gols:25},{pos:"ST",nome:"Diego Souza",jogos:150,gols:60},{pos:"LW",nome:"Alisson",jogos:130,gols:25}]},
+  {time:"Bahia",ano:1959,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Nadinho",jogos:150,gols:0},{pos:"RB",nome:"Vicente",jogos:150,gols:6},{pos:"CB",nome:"Edson",jogos:130,gols:6},{pos:"CB",nome:"Bizu",jogos:130,gols:6},{pos:"LB",nome:"Nado",jogos:130,gols:8},{pos:"CM",nome:"Bil",jogos:150,gols:20},{pos:"CM",nome:"Carlos Alberto",jogos:130,gols:12},{pos:"MEI",nome:"Léo Briglia",jogos:130,gols:30},{pos:"RW",nome:"Biriba",jogos:200,gols:100},{pos:"ST",nome:"Alencar",jogos:150,gols:80},{pos:"LW",nome:"Vavá",jogos:100,gols:50}]},
+  {time:"Bahia",ano:1988,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Edson Pita",jogos:200,gols:0},{pos:"RB",nome:"Zé Carlos",jogos:150,gols:8},{pos:"CB",nome:"Edinho",jogos:200,gols:12},{pos:"CB",nome:"Nei",jogos:150,gols:6},{pos:"LB",nome:"Nado",jogos:150,gols:8},{pos:"CM",nome:"Marcos",jogos:150,gols:12},{pos:"CM",nome:"Charles",jogos:130,gols:8},{pos:"MEI",nome:"Raulzinho",jogos:150,gols:30},{pos:"RW",nome:"Marquinhos",jogos:130,gols:30},{pos:"ST",nome:"Bobô",jogos:250,gols:130},{pos:"LW",nome:"Zé Carlos Pernambucano",jogos:130,gols:25}]},
+  {time:"Bahia",ano:2024,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Marcos Felipe",jogos:130,gols:0},{pos:"RB",nome:"Santiago Arias",jogos:60,gols:4},{pos:"CB",nome:"Kanu",jogos:100,gols:6},{pos:"CB",nome:"Gabriel Xavier",jogos:80,gols:4},{pos:"LB",nome:"Luciano Juba",jogos:80,gols:8},{pos:"CM",nome:"Caio Alexandre",jogos:80,gols:6},{pos:"CM",nome:"Jean Lucas",jogos:60,gols:6},{pos:"MEI",nome:"Everton Ribeiro",jogos:80,gols:12},{pos:"RW",nome:"Cauly",jogos:100,gols:25},{pos:"ST",nome:"Everaldo",jogos:100,gols:30},{pos:"LW",nome:"Thaciano",jogos:100,gols:25}]},
+  {time:"Bahia",ano:2025,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Marcos Felipe",jogos:130,gols:0},{pos:"RB",nome:"Santiago Arias",jogos:80,gols:4},{pos:"CB",nome:"Kanu",jogos:130,gols:8},{pos:"CB",nome:"David Duarte",jogos:60,gols:4},{pos:"LB",nome:"Luciano Juba",jogos:100,gols:10},{pos:"CM",nome:"Caio Alexandre",jogos:100,gols:8},{pos:"CM",nome:"Rezende",jogos:80,gols:6},{pos:"MEI",nome:"Everton Ribeiro",jogos:120,gols:18},{pos:"RW",nome:"Cauly",jogos:130,gols:30},{pos:"ST",nome:"Willian José",jogos:50,gols:20},{pos:"LW",nome:"Ademir",jogos:80,gols:18}]},
+  {time:"Coritiba",ano:1985,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Rafael",jogos:200,gols:0},{pos:"RB",nome:"Zé Carlos",jogos:150,gols:8},{pos:"CB",nome:"Edson",jogos:200,gols:8},{pos:"CB",nome:"Jamir",jogos:200,gols:6},{pos:"LB",nome:"Nei",jogos:150,gols:8},{pos:"CM",nome:"Capilé",jogos:200,gols:30},{pos:"CM",nome:"Edinho",jogos:150,gols:12},{pos:"MEI",nome:"Tato",jogos:150,gols:30},{pos:"RW",nome:"Renato Gaúcho",jogos:80,gols:25},{pos:"ST",nome:"Marca",jogos:150,gols:70},{pos:"LW",nome:"Dirceu Krüger",jogos:200,gols:40}]},
+  {time:"Coritiba",ano:2004,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Fernando Henrique",jogos:150,gols:0},{pos:"RB",nome:"Jackson",jogos:130,gols:8},{pos:"CB",nome:"Émerson",jogos:130,gols:8},{pos:"CB",nome:"Rafael Marques",jogos:130,gols:10},{pos:"LB",nome:"Athirson",jogos:100,gols:8},{pos:"CM",nome:"Marcos Aurélio",jogos:130,gols:18},{pos:"CM",nome:"Wilson",jogos:100,gols:8},{pos:"MEI",nome:"Tcheco",jogos:250,gols:60},{pos:"RW",nome:"Adãozinho",jogos:130,gols:25},{pos:"ST",nome:"Rodrigo Tabata",jogos:100,gols:30},{pos:"LW",nome:"Lima",jogos:100,gols:25}]},
+  {time:"Coritiba",ano:2012,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Vanderlei",jogos:200,gols:0},{pos:"RB",nome:"Chico",jogos:130,gols:6},{pos:"CB",nome:"Luccas Claro",jogos:100,gols:6},{pos:"CB",nome:"Leandro Almeida",jogos:100,gols:8},{pos:"LB",nome:"Júnior César",jogos:130,gols:10},{pos:"CM",nome:"Lincoln",jogos:100,gols:12},{pos:"CM",nome:"João Paulo",jogos:130,gols:8},{pos:"MEI",nome:"Bruno Mota",jogos:80,gols:12},{pos:"RW",nome:"Geraldo",jogos:100,gols:18},{pos:"ST",nome:"Joel",jogos:80,gols:30},{pos:"LW",nome:"Everton Ribeiro",jogos:100,gols:20}]},
+  {time:"Coritiba",ano:2022,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Alex Muralha",jogos:60,gols:0},{pos:"RB",nome:"Natanael",jogos:80,gols:4},{pos:"CB",nome:"Henrique",jogos:80,gols:6},{pos:"CB",nome:"Luciano Castán",jogos:60,gols:4},{pos:"LB",nome:"Egídio",jogos:80,gols:6},{pos:"CM",nome:"Willian Farias",jogos:100,gols:6},{pos:"CM",nome:"Andrey",jogos:80,gols:6},{pos:"MEI",nome:"Régis",jogos:80,gols:12},{pos:"RW",nome:"Alef Manga",jogos:70,gols:25},{pos:"ST",nome:"Léo Gamalho",jogos:80,gols:30},{pos:"LW",nome:"Igor Paixão",jogos:100,gols:20}]},
+  {time:"Athletico-PR",ano:2001,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Flávio",jogos:150,gols:0},{pos:"RB",nome:"Jancarlos",jogos:130,gols:6},{pos:"CB",nome:"Nem",jogos:150,gols:8},{pos:"CB",nome:"Igor",jogos:130,gols:6},{pos:"LB",nome:"Cocito",jogos:130,gols:8},{pos:"CM",nome:"Adriano",jogos:130,gols:8},{pos:"CM",nome:"Alan Bahia",jogos:130,gols:12},{pos:"MEI",nome:"Kléberson",jogos:130,gols:20},{pos:"RW",nome:"Ilan",jogos:100,gols:30},{pos:"ST",nome:"Lucas",jogos:100,gols:40},{pos:"LW",nome:"Alex Mineiro",jogos:150,gols:70}]},
+  {time:"Athletico-PR",ano:2013,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Weverton",jogos:150,gols:0},{pos:"RB",nome:"Sidcley",jogos:100,gols:6},{pos:"CB",nome:"Manoel",jogos:130,gols:8},{pos:"CB",nome:"Luiz Alberto",jogos:130,gols:8},{pos:"LB",nome:"João Pedro",jogos:100,gols:6},{pos:"CM",nome:"João Paulo",jogos:130,gols:8},{pos:"CM",nome:"Bruno Mendes",jogos:100,gols:8},{pos:"MEI",nome:"Paulo Baier",jogos:200,gols:50},{pos:"RW",nome:"Éderson",jogos:100,gols:18},{pos:"ST",nome:"Marcos Guilherme",jogos:100,gols:25},{pos:"LW",nome:"Dráusio",jogos:80,gols:15}]},
+  {time:"Athletico-PR",ano:2018,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Santos",jogos:100,gols:0},{pos:"RB",nome:"Jonathan",jogos:200,gols:12},{pos:"CB",nome:"Paulo André",jogos:150,gols:10},{pos:"CB",nome:"Thiago Heleno",jogos:250,gols:18},{pos:"LB",nome:"Renan Lodi",jogos:100,gols:6},{pos:"CM",nome:"Wellington",jogos:130,gols:8},{pos:"CM",nome:"Lucho González",jogos:150,gols:25},{pos:"MEI",nome:"Raphael Veiga",jogos:80,gols:18},{pos:"RW",nome:"Marcinho",jogos:130,gols:25},{pos:"ST",nome:"Pablo",jogos:100,gols:40},{pos:"LW",nome:"Nikão",jogos:200,gols:50}]},
+  {time:"Athletico-PR",ano:2022,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Bento",jogos:130,gols:0},{pos:"RB",nome:"Khellven",jogos:80,gols:6},{pos:"CB",nome:"Thiago Heleno",jogos:250,gols:18},{pos:"CB",nome:"Pedro Henrique",jogos:130,gols:10},{pos:"LB",nome:"Abner",jogos:100,gols:6},{pos:"CM",nome:"Hugo Moura",jogos:130,gols:6},{pos:"CM",nome:"Fernandinho",jogos:100,gols:8},{pos:"MEI",nome:"David Terans",jogos:100,gols:18},{pos:"RW",nome:"Vitor Roque",jogos:60,gols:20},{pos:"ST",nome:"Pablo",jogos:100,gols:40},{pos:"LW",nome:"Canobbio",jogos:100,gols:18}]},
+  {time:"Sport",ano:1987,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Flávio",jogos:200,gols:0},{pos:"RB",nome:"Aílton",jogos:150,gols:8},{pos:"CB",nome:"Bonamigo",jogos:150,gols:8},{pos:"CB",nome:"Givanildo",jogos:150,gols:6},{pos:"LB",nome:"Marquinhos",jogos:150,gols:8},{pos:"CM",nome:"Zé Carlos",jogos:150,gols:12},{pos:"CM",nome:"Marcos Mileu",jogos:130,gols:12},{pos:"MEI",nome:"Ricardinho",jogos:150,gols:30},{pos:"RW",nome:"Tita",jogos:100,gols:30},{pos:"ST",nome:"Ribamar",jogos:120,gols:60},{pos:"LW",nome:"Marcelo Ramos",jogos:100,gols:35}]},
+  {time:"Sport",ano:2005,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Magrão",jogos:600,gols:0},{pos:"RB",nome:"Ferdinando",jogos:130,gols:8},{pos:"CB",nome:"Durval",jogos:200,gols:18},{pos:"CB",nome:"Wendel",jogos:130,gols:8},{pos:"LB",nome:"Sandro",jogos:100,gols:6},{pos:"CM",nome:"Renatinho",jogos:130,gols:12},{pos:"CM",nome:"Élder Granja",jogos:130,gols:18},{pos:"MEI",nome:"Carlinhos Bala",jogos:250,gols:60},{pos:"RW",nome:"Geraldo",jogos:100,gols:18},{pos:"ST",nome:"Marcelinho Paraíba",jogos:100,gols:40},{pos:"LW",nome:"Adailton",jogos:100,gols:25}]},
+  {time:"Sport",ano:2014,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Magrão",jogos:600,gols:0},{pos:"RB",nome:"Raul Prata",jogos:130,gols:8},{pos:"CB",nome:"Durval",jogos:200,gols:18},{pos:"CB",nome:"Ferron",jogos:100,gols:6},{pos:"LB",nome:"Renê",jogos:200,gols:8},{pos:"CM",nome:"Rithely",jogos:150,gols:8},{pos:"CM",nome:"Renê Júnior",jogos:130,gols:12},{pos:"MEI",nome:"Everton Felipe",jogos:130,gols:18},{pos:"RW",nome:"Wesley",jogos:100,gols:18},{pos:"ST",nome:"Léo Moura",jogos:80,gols:25},{pos:"LW",nome:"Ananias",jogos:100,gols:25}]},
+  {time:"Sport",ano:2018,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Magrão",jogos:600,gols:0},{pos:"RB",nome:"Cláudio Winck",jogos:100,gols:6},{pos:"CB",nome:"Durval",jogos:200,gols:18},{pos:"CB",nome:"Adryelson",jogos:80,gols:6},{pos:"LB",nome:"Sander",jogos:130,gols:8},{pos:"CM",nome:"Ronaldo Henrique",jogos:100,gols:6},{pos:"CM",nome:"Marlone",jogos:100,gols:15},{pos:"MEI",nome:"Everton Felipe",jogos:130,gols:18},{pos:"RW",nome:"Rogério",jogos:100,gols:18},{pos:"ST",nome:"Hernane Brocador",jogos:100,gols:40},{pos:"LW",nome:"André",jogos:100,gols:30}]},
+  {time:"Vitória",ano:1993,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Sérgio",jogos:150,gols:0},{pos:"RB",nome:"Beto",jogos:200,gols:8},{pos:"CB",nome:"Marcelo",jogos:150,gols:8},{pos:"CB",nome:"Tita",jogos:130,gols:6},{pos:"LB",nome:"Nonato",jogos:130,gols:8},{pos:"CM",nome:"Marquinhos",jogos:150,gols:12},{pos:"CM",nome:"Bonamigo",jogos:130,gols:12},{pos:"MEI",nome:"Lela",jogos:200,gols:30},{pos:"RW",nome:"Robson",jogos:130,gols:30},{pos:"ST",nome:"Bebeto",jogos:80,gols:40},{pos:"LW",nome:"Catê",jogos:130,gols:35}]},
+  {time:"Vitória",ano:1997,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Adílson",jogos:150,gols:0},{pos:"RB",nome:"Beto",jogos:200,gols:8},{pos:"CB",nome:"Índio",jogos:130,gols:8},{pos:"CB",nome:"Régis",jogos:150,gols:10},{pos:"LB",nome:"Reginaldo Nascimento",jogos:130,gols:8},{pos:"CM",nome:"Vavá",jogos:130,gols:12},{pos:"CM",nome:"Renato",jogos:130,gols:12},{pos:"MEI",nome:"Ramon",jogos:150,gols:25},{pos:"RW",nome:"Cláudio Adão",jogos:100,gols:25},{pos:"ST",nome:"Lima",jogos:100,gols:40},{pos:"LW",nome:"Catê",jogos:130,gols:35}]},
+  {time:"Vitória",ano:2001,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Sílvio Luiz",jogos:130,gols:0},{pos:"RB",nome:"Renê",jogos:130,gols:8},{pos:"CB",nome:"Wágner",jogos:150,gols:10},{pos:"CB",nome:"Cléber",jogos:130,gols:8},{pos:"LB",nome:"Júnior",jogos:130,gols:8},{pos:"CM",nome:"Eduardo",jogos:130,gols:8},{pos:"CM",nome:"Vando",jogos:130,gols:12},{pos:"MEI",nome:"Nadson",jogos:120,gols:25},{pos:"RW",nome:"Soares",jogos:100,gols:25},{pos:"ST",nome:"Dida",jogos:100,gols:50},{pos:"LW",nome:"Caíco",jogos:100,gols:25}]},
+  {time:"Vitória",ano:2013,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Wilson",jogos:130,gols:0},{pos:"RB",nome:"Nino Paraíba",jogos:200,gols:12},{pos:"CB",nome:"Gabriel Paulista",jogos:100,gols:8},{pos:"CB",nome:"Ramon",jogos:100,gols:6},{pos:"LB",nome:"Juan",jogos:130,gols:8},{pos:"CM",nome:"José Welison",jogos:100,gols:6},{pos:"CM",nome:"Escudero",jogos:80,gols:8},{pos:"MEI",nome:"Marcinho",jogos:130,gols:25},{pos:"RW",nome:"Maxi Biancucchi",jogos:80,gols:35},{pos:"ST",nome:"Dinei",jogos:100,gols:45},{pos:"LW",nome:"William Henrique",jogos:80,gols:20}]},
+  {time:"Fortaleza",ano:2021,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Marcelo Boeck",jogos:100,gols:0},{pos:"RB",nome:"Tinga",jogos:250,gols:12},{pos:"CB",nome:"Marcelo Benevenuto",jogos:150,gols:10},{pos:"CB",nome:"Titi",jogos:250,gols:20},{pos:"LB",nome:"Bruno Melo",jogos:130,gols:12},{pos:"CM",nome:"Felipe",jogos:130,gols:8},{pos:"CM",nome:"Ronald",jogos:100,gols:6},{pos:"MEI",nome:"Lucas Crispim",jogos:130,gols:25},{pos:"RW",nome:"Yago Pikachu",jogos:200,gols:50},{pos:"ST",nome:"Wellington Paulista",jogos:130,gols:50},{pos:"LW",nome:"David",jogos:100,gols:20}]},
+  {time:"Fortaleza",ano:2022,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Fernando Miguel",jogos:100,gols:0},{pos:"RB",nome:"Tinga",jogos:250,gols:12},{pos:"CB",nome:"Benevenuto",jogos:150,gols:10},{pos:"CB",nome:"Titi",jogos:250,gols:20},{pos:"LB",nome:"Juninho Capixaba",jogos:100,gols:8},{pos:"CM",nome:"Lucas Sasha",jogos:130,gols:8},{pos:"CM",nome:"Hércules",jogos:130,gols:12},{pos:"MEI",nome:"Lucas Crispim",jogos:130,gols:25},{pos:"RW",nome:"Yago Pikachu",jogos:200,gols:50},{pos:"ST",nome:"Robson",jogos:100,gols:40},{pos:"LW",nome:"Moisés",jogos:130,gols:30}]},
+  {time:"Fortaleza",ano:2023,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"João Ricardo",jogos:130,gols:0},{pos:"RB",nome:"Tinga",jogos:250,gols:12},{pos:"CB",nome:"Brítez",jogos:130,gols:8},{pos:"CB",nome:"Titi",jogos:250,gols:20},{pos:"LB",nome:"Bruno Pacheco",jogos:200,gols:12},{pos:"CM",nome:"Caio Alexandre",jogos:100,gols:8},{pos:"CM",nome:"Hércules",jogos:130,gols:12},{pos:"MEI",nome:"Tomás Pochettino",jogos:80,gols:8},{pos:"RW",nome:"Yago Pikachu",jogos:200,gols:50},{pos:"ST",nome:"Lucero",jogos:100,gols:45},{pos:"LW",nome:"Moisés",jogos:130,gols:30}]},
+  {time:"Fortaleza",ano:2024,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"João Ricardo",jogos:130,gols:0},{pos:"RB",nome:"Tinga",jogos:250,gols:12},{pos:"CB",nome:"Brítez",jogos:130,gols:8},{pos:"CB",nome:"Titi",jogos:250,gols:20},{pos:"LB",nome:"Bruno Pacheco",jogos:200,gols:12},{pos:"CM",nome:"Pol Fernández",jogos:80,gols:8},{pos:"CM",nome:"Hércules",jogos:130,gols:12},{pos:"MEI",nome:"Lucas Sasha",jogos:130,gols:8},{pos:"RW",nome:"Yago Pikachu",jogos:250,gols:60},{pos:"ST",nome:"Lucero",jogos:120,gols:55},{pos:"LW",nome:"Marinho",jogos:80,gols:18}]},
+  {time:"Ceará",ano:1994,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Wágner",jogos:150,gols:0},{pos:"RB",nome:"Careca",jogos:130,gols:8},{pos:"CB",nome:"Marcelo",jogos:130,gols:8},{pos:"CB",nome:"Cláudio",jogos:130,gols:6},{pos:"LB",nome:"Alex",jogos:130,gols:8},{pos:"CM",nome:"Marcos Aurélio",jogos:130,gols:12},{pos:"CM",nome:"Bismarck",jogos:130,gols:18},{pos:"MEI",nome:"Mota",jogos:150,gols:30},{pos:"RW",nome:"Sérgio Negão",jogos:130,gols:30},{pos:"ST",nome:"Sérgio Alves",jogos:350,gols:200},{pos:"LW",nome:"Anderson",jogos:100,gols:25}]},
+  {time:"Ceará",ano:2018,formacao:"4-4-2",jogadores:[{pos:"GK",nome:"Éverson",jogos:100,gols:0},{pos:"RB",nome:"Samuel Xavier",jogos:130,gols:8},{pos:"CB",nome:"Luiz Otávio",jogos:300,gols:20},{pos:"CB",nome:"Valdo",jogos:100,gols:6},{pos:"LB",nome:"Tiago Alves",jogos:100,gols:6},{pos:"CM",nome:"Richardson",jogos:200,gols:12},{pos:"CM",nome:"Fabinho",jogos:100,gols:8},{pos:"MEI",nome:"Ricardinho",jogos:200,gols:30},{pos:"RW",nome:"Leandro Carvalho",jogos:130,gols:25},{pos:"ST",nome:"Felippe Cardoso",jogos:80,gols:25},{pos:"LW",nome:"Felipe Silva",jogos:100,gols:18}]},
+  {time:"Ceará",ano:2021,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"Richard",jogos:100,gols:0},{pos:"RB",nome:"Igor",jogos:100,gols:6},{pos:"CB",nome:"Luiz Otávio",jogos:300,gols:20},{pos:"CB",nome:"Gabriel Lacerda",jogos:100,gols:8},{pos:"LB",nome:"Bruno Pacheco",jogos:130,gols:10},{pos:"CM",nome:"Fernando Sobral",jogos:150,gols:12},{pos:"CM",nome:"Richardson",jogos:200,gols:12},{pos:"MEI",nome:"Vina",jogos:180,gols:50},{pos:"RW",nome:"Lima",jogos:130,gols:25},{pos:"ST",nome:"Cléber",jogos:100,gols:30},{pos:"LW",nome:"Mendoza",jogos:100,gols:18}]},
+  {time:"Ceará",ano:2022,formacao:"4-3-3",jogadores:[{pos:"GK",nome:"João Ricardo",jogos:100,gols:0},{pos:"RB",nome:"Michel Macedo",jogos:100,gols:6},{pos:"CB",nome:"Luiz Otávio",jogos:300,gols:20},{pos:"CB",nome:"Gabriel Lacerda",jogos:100,gols:8},{pos:"LB",nome:"Victor Luis",jogos:80,gols:6},{pos:"CM",nome:"Richardson",jogos:200,gols:12},{pos:"CM",nome:"Fernando Sobral",jogos:150,gols:12},{pos:"MEI",nome:"Vina",jogos:180,gols:50},{pos:"RW",nome:"Lima",jogos:130,gols:25},{pos:"ST",nome:"Cléber",jogos:100,gols:30},{pos:"LW",nome:"Erick",jogos:100,gols:18}]}
+];
+
+// ============================================================
+// POSIÇÕES NO CAMPO — por formação
+// ============================================================
+const POSICOES_CAMPO = {
+  "4-4-2": [
+    {pos:"GK",x:50,y:90},{pos:"RB",x:80,y:70},{pos:"CB",x:65,y:75},{pos:"CB",x:35,y:75},{pos:"LB",x:20,y:70},
+    {pos:"CM",x:75,y:50},{pos:"CM",x:58,y:55},{pos:"CM",x:42,y:55},{pos:"CM",x:25,y:50},
+    {pos:"ST",x:65,y:25},{pos:"ST",x:35,y:25}
+  ],
+  "4-3-3": [
+    {pos:"GK",x:50,y:90},{pos:"RB",x:80,y:70},{pos:"CB",x:63,y:76},{pos:"CB",x:37,y:76},{pos:"LB",x:20,y:70},
+    {pos:"CM",x:70,y:52},{pos:"CM",x:50,y:48},{pos:"CM",x:30,y:52},
+    {pos:"RW",x:80,y:25},{pos:"ST",x:50,y:20},{pos:"LW",x:20,y:25}
+  ],
+  "4-2-3-1": [
+    {pos:"GK",x:50,y:90},{pos:"RB",x:80,y:72},{pos:"CB",x:63,y:78},{pos:"CB",x:37,y:78},{pos:"LB",x:20,y:72},
+    {pos:"CM",x:63,y:58},{pos:"CM",x:37,y:58},
+    {pos:"MEI",x:75,y:40},{pos:"MEI",x:50,y:38},{pos:"MEI",x:25,y:40},
+    {pos:"ST",x:50,y:18}
+  ],
+  "4-2-4": [
+    {pos:"GK",x:50,y:90},{pos:"RB",x:80,y:70},{pos:"CB",x:63,y:76},{pos:"CB",x:37,y:76},{pos:"LB",x:20,y:70},
+    {pos:"CM",x:62,y:54},{pos:"CM",x:38,y:54},
+    {pos:"RW",x:82,y:24},{pos:"ST",x:60,y:18},{pos:"ST",x:40,y:18},{pos:"LW",x:18,y:24}
+  ],
+  "3-5-2": [
+    {pos:"GK",x:50,y:90},
+    {pos:"CB",x:70,y:76},{pos:"CB",x:50,y:80},{pos:"CB",x:30,y:76},
+    {pos:"RM",x:88,y:52},{pos:"CM",x:68,y:50},{pos:"CM",x:50,y:47},{pos:"CM",x:32,y:50},{pos:"LM",x:12,y:52},
+    {pos:"ST",x:62,y:20},{pos:"ST",x:38,y:20}
+  ]
+};
+
+// ============================================================
+// ESTADO
+// ============================================================
+let state = {
+  meuTime: null,
+  escalacao: {},
+  rodadas: [],
+  rodadaAtual: 0,
+  record: {v:0,e:0,d:0,gp:0,gc:0},
+  posAtiva: null,
+  dadoStep: 1,
+  dadoTime1: null,
+  formacaoEscolhida: null
+};
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function mostrarTela(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+function irParaHome(){mostrarTela('home')}
+function irParaTemporada(){mostrarTela('temporada')}
+
+// ============================================================
+// TELA HOME — ticker
+// ============================================================
+(function initTicker(){
+  const ticker = document.getElementById('ticker-inner');
+  const items = TIMES.slice(0,20).map(t=>`<span class="ticker-item">${t.time} ${t.ano}</span>`).join('');
+  ticker.innerHTML = items + items;
+})();
+
+function irParaDado(){
+  state.dadoStep=1;
+  state.dadoTime1=null;
+  state.formacaoEscolhida=null;
+  state.escalacao={};
+  state.rodadas=[];
+  state.record={v:0,e:0,d:0,gp:0,gc:0};
+  // Resetar seleção de formação
+  document.querySelectorAll('.formacao-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('btn-ir-dado').style.display='none';
+  document.getElementById('dado-formacao-step').style.display='flex';
+  document.getElementById('dado-content').style.display='none';
+  mostrarTela('dado');
+}
+
+function selecionarFormacao(f){
+  state.formacaoEscolhida=f;
+  document.querySelectorAll('.formacao-card').forEach(c=>c.classList.remove('selected'));
+  const ids={'4-4-2':'fc-443','4-3-3':'fc-433','4-2-4':'fc-424','3-5-2':'fc-352'};
+  if(ids[f]) document.getElementById(ids[f]).classList.add('selected');
+  document.getElementById('btn-ir-dado').style.display='block';
+}
+
+function irParaDadoStep(){
+  document.getElementById('dado-formacao-step').style.display='none';
+  document.getElementById('dado-content').style.display='flex';
+  atualizarDadoUI();
+}
+
+// ============================================================
+// TELA DADO
+// ============================================================
+function atualizarDadoUI(){
+  document.getElementById('dado-step-label').textContent = state.dadoStep===1 ? 'Passo 1 de 1 — Seu time' : '';
+  document.getElementById('dado-result').innerHTML = '<div style="font-family:\'Oswald\',sans-serif;font-size:12px;color:var(--dim);letter-spacing:2px">Aguardando...</div>';
+  document.getElementById('dado-actions').style.display='none';
+}
+
+function rolarDado(){
+  const box = document.getElementById('dado-box');
+  box.classList.add('rolling');
+  setTimeout(()=>box.classList.remove('rolling'),500);
+
+  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  let i=0;
+  const interval = setInterval(()=>{
+    box.textContent = faces[Math.floor(Math.random()*6)];
+    i++;
+    if(i>15){
+      clearInterval(interval);
+      box.textContent = faces[Math.floor(Math.random()*6)];
+      const time = TIMES[Math.floor(Math.random()*TIMES.length)];
+      mostrarResultadoDado(time);
+    }
+  },80);
+}
+
+function mostrarResultadoDado(time){
+  state.dadoTime1 = time;
+  const res = document.getElementById('dado-result');
+  res.innerHTML = `
+    <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;color:var(--muted);margin-bottom:6px">Seu time</div>
+    <div class="dado-time">${time.time}</div>
+    <div class="dado-ano">${time.ano}</div>
+    <div class="dado-formacao">${time.formacao}</div>`;
+  const actions = document.getElementById('dado-actions');
+  actions.style.display='flex';
+  document.getElementById('btn-dado-next').textContent='Monte seu time →';
+}
+
+function dadoProximo(){
+  state.meuTime = state.dadoTime1;
+  gerarRodadas();
+  iniciarEscalacao();
+  mostrarTela('escalacao');
+}
+
+// ============================================================
+// GERAR 38 RODADAS
+// ============================================================
+function gerarRodadas(){
+  const adversarios = [...TIMES].filter(t=>!(t.time===state.meuTime.time&&t.ano===state.meuTime.ano));
+  const shuffled = adversarios.sort(()=>Math.random()-.5);
+  state.rodadas = [];
+  for(let i=0;i<38;i++){
+    state.rodadas.push({
+      num: i+1,
+      adversario: shuffled[i % shuffled.length],
+      resultado: null,
+      placarMeu: null,
+      placarAdv: null,
+      gols: []
+    });
+  }
+  state.rodadaAtual=0;
+  renderizarTemporada();
+}
+
+// ============================================================
+// TELA ESCALAÇÃO
+// ============================================================
+function iniciarEscalacao(){
+  state.escalacao={};
+  state.posAtiva=null;
+  const t = state.meuTime;
+  document.getElementById('esc-title').textContent = `${t.time} ${t.ano}`;
+  const f = state.formacaoEscolhida || t.formacao;
+  document.getElementById('esc-sub').textContent = `Formação: ${f} — Escale os 11 titulares`;
+  renderCampo();
+  renderProgress();
+  document.getElementById('escolha-pos-title').textContent = '—';
+  document.getElementById('escolha-hint').textContent = 'Clique em uma posição no campo';
+  document.getElementById('jogadores-list').innerHTML = '';
+  document.getElementById('btn-confirmar').style.display='none';
+}
+
+function renderProgress(){
+  const total = state.meuTime.jogadores.length;
+  const feitos = Object.keys(state.escalacao).length;
+  const prog = document.getElementById('esc-progress');
+  prog.innerHTML = '';
+  for(let i=0;i<total;i++){
+    const dot = document.createElement('div');
+    dot.className='esc-dot'+(i<feitos?' done':'')+(i===feitos?' active':'');
+    prog.appendChild(dot);
+  }
+}
+
+function getPosicoesCampo(){
+  const f = state.formacaoEscolhida || state.meuTime.formacao;
+  if(POSICOES_CAMPO[f]) return POSICOES_CAMPO[f];
+  if(f.startsWith('4-3-3')) return POSICOES_CAMPO['4-3-3'];
+  if(f.startsWith('4-2-3-1')) return POSICOES_CAMPO['4-2-3-1'];
+  if(f.startsWith('4-2-4')) return POSICOES_CAMPO['4-2-4'];
+  if(f.startsWith('3-5-2')) return POSICOES_CAMPO['3-5-2'];
+  return POSICOES_CAMPO['4-4-2'];
+}
+
+function renderCampo(){
+  const campo = document.getElementById('campo');
+  campo.querySelectorAll('.player-slot').forEach(e=>e.remove());
+  const jogadores = state.meuTime.jogadores;
+  const posicoes = getPosicoesCampo();
+  jogadores.forEach((jog,i)=>{
+    const pos = posicoes[i] || {x:50,y:50};
+    const slot = document.createElement('div');
+    slot.className='player-slot';
+    slot.style.left=pos.x+'%';
+    slot.style.top=pos.y+'%';
+    const escolhido = state.escalacao[i];
+    const isAtivo = state.posAtiva===i;
+    slot.innerHTML=`
+      <div class="player-circle ${escolhido?'filled':''} ${isAtivo&&!escolhido?'active-slot':''}">${jog.pos}</div>
+      <div class="player-label ${escolhido?'':'empty'}">${escolhido?escolhido.nome.split(' ')[0]:jog.pos}</div>`;
+    slot.onclick=()=>selecionarPosicao(i);
+    campo.appendChild(slot);
+  });
+}
+
+function selecionarPosicao(idx){
+  state.posAtiva=idx;
+  renderCampo();
+  const jog = state.meuTime.jogadores[idx];
+  document.getElementById('escolha-pos-title').textContent = jog.pos+' — '+jog.nome;
+  document.getElementById('escolha-hint').textContent = 'Selecione um jogador';
+  renderJogadoresList(idx);
+}
+
+function renderJogadoresList(posIdx){
+  const lista = document.getElementById('jogadores-list');
+  lista.innerHTML='';
+  const pos = state.meuTime.jogadores[posIdx];
+  const escolhidosIds = Object.values(state.escalacao).map(e=>e.nome);
+
+  state.meuTime.jogadores.forEach((jog,i)=>{
+    if(escolhidosIds.includes(jog.nome)&&state.escalacao[posIdx]?.nome!==jog.nome) return;
+    const card = document.createElement('div');
+    card.className='jogador-card'+(state.escalacao[posIdx]?.nome===jog.nome?' selected':'');
+    card.innerHTML=`
+      <div class="jog-pos">${jog.pos}</div>
+      <div class="jog-info">
+        <div class="jog-name">${jog.nome}</div>
+        <div class="jog-stats">Jogos — ${jog.jogos} // Gols — ${jog.gols}</div>
+      </div>
+      <div class="jog-gols">${jog.gols}</div>`;
+    card.onclick=()=>escolherJogador(posIdx,jog);
+    lista.appendChild(card);
+  });
+}
+
+function escolherJogador(posIdx, jog){
+  state.escalacao[posIdx]=jog;
+  renderCampo();
+  renderProgress();
+  renderJogadoresList(posIdx);
+  const total=state.meuTime.jogadores.length;
+  const feitos=Object.keys(state.escalacao).length;
+  if(feitos===total){
+    document.getElementById('btn-confirmar').style.display='block';
+    document.getElementById('escolha-hint').textContent='Escalação completa! Confirme para começar.';
+  }
+}
+
+function confirmarEscalacao(){
+  mostrarTela('temporada');
+  atualizarTemporadaHeader();
+}
+
+// ============================================================
+// TELA TEMPORADA
+// ============================================================
+function atualizarTemporadaHeader(){
+  const t=state.meuTime;
+  document.getElementById('temp-title').textContent=`${t.time} ${t.ano}`;
+  document.getElementById('temp-subtitle').textContent=`${state.record.v+state.record.e+state.record.d} de 38 rodadas jogadas`;
+  document.getElementById('rec-v').textContent=state.record.v;
+  document.getElementById('rec-e').textContent=state.record.e;
+  document.getElementById('rec-d').textContent=state.record.d;
+  document.getElementById('rec-gp').textContent=state.record.gp;
+  document.getElementById('rec-gc').textContent=state.record.gc;
+}
+
+function renderizarTemporada(){
+  const grid = document.getElementById('rodadas-grid');
+  grid.innerHTML='';
+  state.rodadas.forEach((rod,i)=>{
+    const card=document.createElement('div');
+    let cls='rodada-card';
+    if(rod.resultado==='win') cls+=' win';
+    else if(rod.resultado==='draw') cls+=' draw';
+    else if(rod.resultado==='lose') cls+=' lose';
+    else if(i===state.rodadaAtual) cls+=' current';
+    else cls+=' pending';
+
+    const scoreStr = rod.resultado ? `${rod.placarMeu}×${rod.placarAdv}` : '—';
+    const golsStr = rod.gols.length ? rod.gols.map(g=>`${g.tempo}' ${g.nome}`).join(', ') : '';
+
+    card.className=cls;
+    card.innerHTML=`
+      <div class="rod-num">Rodada ${rod.num}</div>
+      <div class="rod-matchup">
+        <div class="rod-team">
+          <div class="rod-team-name">${state.meuTime.time}</div>
+          <div class="rod-team-year">${state.meuTime.ano}</div>
+        </div>
+        <div class="rod-score ${rod.resultado?'':'pending-score'}">${scoreStr}</div>
+        <div class="rod-team" style="text-align:right">
+          <div class="rod-team-name">${rod.adversario.time}</div>
+          <div class="rod-team-year">${rod.adversario.ano}</div>
+        </div>
+      </div>
+      ${golsStr?`<div class="rod-gols">${golsStr}</div>`:''}
+      ${i===state.rodadaAtual&&!rod.resultado?`<div class="rod-btn"><button class="btn btn-gold btn-sm" onclick="jogarRodada(${i})" style="width:100%">Jogar rodada ${rod.num}</button></div>`:''}`;
+    grid.appendChild(card);
+  });
+  atualizarTemporadaHeader();
+}
+
+// ============================================================
+// SIMULAÇÃO
+// ============================================================
+function jogarRodada(idx){
+  const rod = state.rodadas[idx];
+  const adv = rod.adversario;
+
+  // Probabilidades: 60% vitória, 20% empate, 20% derrota
+  const rand = Math.random();
+  let golsMeu, golsAdv;
+  if(rand<0.60){
+    golsMeu = Math.floor(Math.random()*4)+1;
+    golsAdv = Math.floor(Math.random()*golsMeu);
+  } else if(rand<0.80){
+    golsMeu = Math.floor(Math.random()*3);
+    golsAdv = golsMeu;
+  } else {
+    golsAdv = Math.floor(Math.random()*4)+1;
+    golsMeu = Math.floor(Math.random()*golsAdv);
+  }
+
+  // Gols por jogadores
+  const gols=[];
+  const atacantes = Object.values(state.escalacao).filter(j=>['ST','RW','LW','MEI'].includes(j.pos));
+  const todos = Object.values(state.escalacao);
+  for(let i=0;i<golsMeu;i++){
+    const pool = Math.random()<0.75 ? (atacantes.length?atacantes:todos) : todos;
+    const jog = pool[Math.floor(Math.random()*pool.length)];
+    gols.push({nome:jog.nome,tempo:Math.floor(Math.random()*90)+1,equipe:'meu'});
+  }
+  const advJogadores = adv.jogadores.filter(j=>['ST','RW','LW','MEI'].includes(j.pos));
+  for(let i=0;i<golsAdv;i++){
+    const pool = Math.random()<0.75 ? (advJogadores.length?advJogadores:adv.jogadores) : adv.jogadores;
+    const jog = pool[Math.floor(Math.random()*pool.length)];
+    gols.push({nome:jog.nome,tempo:Math.floor(Math.random()*90)+1,equipe:'adv'});
+  }
+  gols.sort((a,b)=>a.tempo-b.tempo);
+
+  rod.placarMeu=golsMeu;
+  rod.placarAdv=golsAdv;
+  rod.gols=gols;
+  rod.resultado=golsMeu>golsAdv?'win':golsMeu===golsAdv?'draw':'lose';
+
+  state.record.gp+=golsMeu;
+  state.record.gc+=golsAdv;
+  if(rod.resultado==='win') state.record.v++;
+  else if(rod.resultado==='draw') state.record.e++;
+  else state.record.d++;
+
+  // Mostrar simulação
+  mostrarSimulacao(idx);
+}
+
+function mostrarSimulacao(idx){
+  const rod = state.rodadas[idx];
+  mostrarTela('simulacao');
+
+  document.getElementById('sim-rodada-label').textContent=`Rodada ${rod.num} de 38`;
+  document.getElementById('sim-meu-time').textContent=state.meuTime.time;
+  document.getElementById('sim-meu-ano').textContent=state.meuTime.ano;
+  document.getElementById('sim-adv-time').textContent=rod.adversario.time;
+  document.getElementById('sim-adv-ano').textContent=rod.adversario.ano;
+
+  // Animar placar
+  document.getElementById('sim-score-meu').textContent='0';
+  document.getElementById('sim-score-adv').textContent='0';
+  document.getElementById('sim-resultado-badge').innerHTML='';
+  document.getElementById('sim-gols-list').innerHTML='';
+
+  let meuPlacar=0, advPlacar=0;
+  const golsOrdenados=[...rod.gols];
+
+  function animarGol(i){
+    if(i>=golsOrdenados.length){
+      // Fim
+      const res=rod.resultado;
+      const labels={win:'VITÓRIA',draw:'EMPATE',lose:'DERROTA'};
+      document.getElementById('sim-resultado-badge').innerHTML=`<div class="sim-resultado ${res}">${labels[res]}</div>`;
+      const temProxima = idx+1<38;
+      document.getElementById('btn-proxima-rodada').style.display=temProxima?'block':'none';
+      document.getElementById('btn-proxima-rodada').textContent=temProxima?`Rodada ${idx+2} →`:'Ver resultado final';
+      document.getElementById('btn-proxima-rodada').onclick=temProxima?proximaRodada:mostrarFim;
+      document.getElementById('btn-ver-temporada').style.display='block';
+      if(!temProxima) setTimeout(mostrarFim,1200);
+      return;
+    }
+    const gol=golsOrdenados[i];
+    setTimeout(()=>{
+      if(gol.equipe==='meu'){meuPlacar++;document.getElementById('sim-score-meu').textContent=meuPlacar;}
+      else{advPlacar++;document.getElementById('sim-score-adv').textContent=advPlacar;}
+      document.getElementById('sim-score-meu').classList.add('sim-animating');
+      setTimeout(()=>document.getElementById('sim-score-meu').classList.remove('sim-animating'),300);
+
+      const row=document.createElement('div');
+      row.className='sim-gol-row';
+      const equipe=gol.equipe==='meu'?state.meuTime.time:rod.adversario.time;
+      row.innerHTML=`<span class="sim-gol-time">${gol.tempo}'</span>${gol.nome} <span style="color:var(--muted)">(${equipe})</span>`;
+      document.getElementById('sim-gols-list').appendChild(row);
+      animarGol(i+1);
+    },400);
+  }
+
+  if(golsOrdenados.length===0){
+    document.getElementById('sim-resultado-badge').innerHTML=`<div class="sim-resultado draw">EMPATE SEM GOLS</div>`;
+    const temProxima=idx+1<38;
+    document.getElementById('btn-proxima-rodada').style.display=temProxima?'block':'none';
+    document.getElementById('btn-proxima-rodada').textContent=temProxima?`Rodada ${idx+2} →`:'Ver resultado final';
+    document.getElementById('btn-proxima-rodada').onclick=temProxima?proximaRodada:mostrarFim;
+    document.getElementById('btn-ver-temporada').style.display='block';
+    if(!temProxima) setTimeout(mostrarFim,1000);
+  } else {
+    setTimeout(()=>animarGol(0),600);
+  }
+}
+
+function proximaRodada(){
+  state.rodadaAtual++;
+  renderizarTemporada();
+  mostrarTela('temporada');
+  setTimeout(()=>{
+    const grid=document.getElementById('rodadas-grid');
+    const cards=grid.querySelectorAll('.rodada-card.current');
+    if(cards.length) cards[0].scrollIntoView({behavior:'smooth',block:'center'});
+  },100);
+}
+
+// ============================================================
+// TELA FIM
+// ============================================================
+function mostrarFim(){
+  mostrarTela('fim');
+  const r=state.record;
+  const perfeito=r.d===0&&r.e===0;
+  document.getElementById('fim-titulo').textContent=perfeito?'38A0BR':'Temporada';
+  document.getElementById('fim-titulo').className='fim-titulo '+(perfeito?'perfeito':'derrota');
+  document.getElementById('fim-sub').textContent=perfeito
+    ?`Lendário. Você completou as 38 rodadas sem perder nem empatar com ${state.meuTime.time} ${state.meuTime.ano}. Seu nome entra para o almanaque.`
+    :`${state.meuTime.time} ${state.meuTime.ano} encerrou a temporada com ${r.v} vitórias, ${r.e} empates e ${r.d} derrota${r.d!==1?'s':''}. ${r.d===0?'Invicto, mas não perfeito.':'Quase lá.'}`;
+  document.getElementById('fim-v').textContent=r.v;
+  document.getElementById('fim-e').textContent=r.e;
+  document.getElementById('fim-d').textContent=r.d;
+  document.getElementById('fim-meu-nome').textContent=`${state.meuTime.time} — ${state.meuTime.ano}`;
+}
+
+function reiniciar(){
+  irParaDado();
+}
+
+// ============================================================
+// APOIE O CRIADOR
+// ============================================================
+function irParaApoio(){mostrarTela('apoio')}
+
+function copiarPix(){
+  const key='869091ab-98a8-4daf-b65c-ea4f28df6092';
+  const btn=document.getElementById('btn-copiar-pix');
+  function sucesso(){
+    btn.textContent='✓ Copiado!';
+    btn.style.background='var(--gold-light)';
+    setTimeout(()=>{btn.textContent='Copiar chave PIX';btn.style.background='';},2500);
+  }
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(key).then(sucesso).catch(()=>{fallbackCopy(key);sucesso();});
+  } else {
+    fallbackCopy(key);sucesso();
+  }
+}
+function fallbackCopy(text){
+  const el=document.createElement('textarea');
+  el.value=text;el.style.position='fixed';el.style.opacity='0';
+  document.body.appendChild(el);el.focus();el.select();
+  try{document.execCommand('copy');}catch(e){}
+  document.body.removeChild(el);
+}
+</script>
+</body>
+</html>
