@@ -372,12 +372,15 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
       <div class="temp-title" id="temp-title">Temporada</div>
       <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted)" id="temp-subtitle">38 rodadas pela frente</div>
     </div>
-    <div class="temp-record">
-      <div class="temp-rec-item"><div class="temp-rec-label">V</div><div class="temp-rec-val win" id="rec-v">0</div></div>
-      <div class="temp-rec-item"><div class="temp-rec-label">E</div><div class="temp-rec-val" id="rec-e">0</div></div>
-      <div class="temp-rec-item"><div class="temp-rec-label">D</div><div class="temp-rec-val lose" id="rec-d">0</div></div>
-      <div class="temp-rec-item"><div class="temp-rec-label">GP</div><div class="temp-rec-val" id="rec-gp">0</div></div>
-      <div class="temp-rec-item"><div class="temp-rec-label">GC</div><div class="temp-rec-val" id="rec-gc">0</div></div>
+    <div style="display:flex;align-items:center;gap:24px">
+      <button class="btn btn-outline btn-sm" id="btn-simular-tudo" onclick="simularTemporadaCompleta()">⚡ Simular tudo</button>
+      <div class="temp-record">
+        <div class="temp-rec-item"><div class="temp-rec-label">V</div><div class="temp-rec-val win" id="rec-v">0</div></div>
+        <div class="temp-rec-item"><div class="temp-rec-label">E</div><div class="temp-rec-val" id="rec-e">0</div></div>
+        <div class="temp-rec-item"><div class="temp-rec-label">D</div><div class="temp-rec-val lose" id="rec-d">0</div></div>
+        <div class="temp-rec-item"><div class="temp-rec-label">GP</div><div class="temp-rec-val" id="rec-gp">0</div></div>
+        <div class="temp-rec-item"><div class="temp-rec-label">GC</div><div class="temp-rec-val" id="rec-gc">0</div></div>
+      </div>
     </div>
   </div>
   <div class="rodadas-grid" id="rodadas-grid"></div>
@@ -963,11 +966,11 @@ function renderizarTemporada(){
 // ============================================================
 // SIMULAÇÃO
 // ============================================================
-function jogarRodada(idx){
+function calcularRodada(idx){
   const rod = state.rodadas[idx];
+  if(rod.resultado) return; // já jogada
   const adv = rod.adversario;
 
-  // Probabilidades: 60% vitória, 20% empate, 20% derrota
   const rand = Math.random();
   let golsMeu, golsAdv;
   if(rand<0.60){
@@ -981,7 +984,6 @@ function jogarRodada(idx){
     golsMeu = Math.floor(Math.random()*golsAdv);
   }
 
-  // Gols por jogadores
   const gols=[];
   const atacantes = Object.values(state.escalacao).filter(j=>['ST','RW','LW','MEI'].includes(j.pos));
   const todos = Object.values(state.escalacao);
@@ -1008,9 +1010,18 @@ function jogarRodada(idx){
   if(rod.resultado==='win') state.record.v++;
   else if(rod.resultado==='draw') state.record.e++;
   else state.record.d++;
+}
 
-  // Mostrar simulação
+function jogarRodada(idx){
+  calcularRodada(idx);
   mostrarSimulacao(idx);
+}
+
+function simularTemporadaCompleta(){
+  for(let i=0;i<38;i++) calcularRodada(i);
+  state.rodadaAtual=37;
+  renderizarTemporada();
+  mostrarFim();
 }
 
 function mostrarSimulacao(idx){
