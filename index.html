@@ -318,7 +318,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
       </div>
     </div>
     <div id="btn-ir-dado" style="display:none;margin-top:8px">
-      <button class="btn btn-gold" onclick="irParaDadoStep()">Sortear time →</button>
+      <button class="btn btn-gold" onclick="irParaDadoStep()">Montar time →</button>
     </div>
   </div>
 
@@ -607,7 +607,9 @@ let state = {
   posAtiva: null,
   dadoStep: 1,
   dadoTime1: null,
-  formacaoEscolhida: null
+  formacaoEscolhida: null,
+  posicaoAtual: 0,
+  timePosAtual: null
 };
 
 // ============================================================
@@ -653,9 +655,7 @@ function selecionarFormacao(f){
 }
 
 function irParaDadoStep(){
-  document.getElementById('dado-formacao-step').style.display='none';
-  document.getElementById('dado-content').style.display='flex';
-  atualizarDadoUI();
+  iniciarEscalacao();
 }
 
 // ============================================================
@@ -703,7 +703,6 @@ function dadoProximo(){
   state.meuTime = state.dadoTime1;
   gerarRodadas();
   iniciarEscalacao();
-  mostrarTela('escalacao');
 }
 
 // ============================================================
@@ -733,16 +732,27 @@ function gerarRodadas(){
 function iniciarEscalacao(){
   state.escalacao={};
   state.posAtiva=null;
-  const t = state.meuTime;
-  document.getElementById('esc-title').textContent = `${t.time} ${t.ano}`;
-  const f = state.formacaoEscolhida || t.formacao;
-  document.getElementById('esc-sub').textContent = `Formação: ${f} — Escale os 11 titulares`;
+  state.posicaoAtual=0;
+  state.timePosAtual=null;
+
+  // time sintético — slots baseados nas posições da formação escolhida
+  const posicoes = POSICOES_CAMPO[state.formacaoEscolhida] || POSICOES_CAMPO['4-4-2'];
+  state.meuTime = {
+    time:'Meu Time',
+    ano: state.formacaoEscolhida,
+    formacao: state.formacaoEscolhida,
+    jogadores: posicoes.map(p=>({pos:p.pos, nome:p.pos, jogos:0, gols:0}))
+  };
+
+  gerarRodadas();
+
+  document.getElementById('esc-title').textContent = 'Monte seu time';
+  document.getElementById('esc-sub').textContent = `Formação: ${state.formacaoEscolhida} — Posição 1 de 11`;
+  document.getElementById('btn-confirmar').style.display='none';
   renderCampo();
   renderProgress();
-  document.getElementById('escolha-pos-title').textContent = '—';
-  document.getElementById('escolha-hint').textContent = 'Clique em uma posição no campo';
-  document.getElementById('jogadores-list').innerHTML = '';
-  document.getElementById('btn-confirmar').style.display='none';
+  atualizarEscolhaUI();
+  mostrarTela('escalacao');
 }
 
 function renderProgress(){
@@ -755,6 +765,49 @@ function renderProgress(){
     dot.className='esc-dot'+(i<feitos?' done':'')+(i===feitos?' active':'');
     prog.appendChild(dot);
   }
+}
+
+function atualizarEscolhaUI(){
+  const posicoes = getPosicoesCampo();
+  const idx = state.posicaoAtual;
+  const posAtual = posicoes[idx];
+  state.posAtiva = idx;
+
+  document.getElementById('esc-sub').textContent =
+    `Formação: ${state.formacaoEscolhida} — Posição ${idx+1} de 11`;
+  document.getElementById('escolha-pos-title').textContent = posAtual ? posAtual.pos : '—';
+
+  if(!state.timePosAtual){
+    document.getElementById('escolha-hint').textContent = 'Role o dado para sortear um time';
+    document.getElementById('jogadores-list').innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:32px 0">
+        <div class="dado-box" id="dado-esc" style="width:90px;height:90px;font-size:44px;cursor:pointer" onclick="rolarDadoEscalacao()">⚄</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted)">Clique para sortear</div>
+      </div>`;
+  } else {
+    const t = state.timePosAtual;
+    document.getElementById('escolha-hint').textContent = `${t.time} ${t.ano} — escolha o ${posAtual.pos}`;
+    renderJogadoresList(idx);
+  }
+
+  renderCampo();
+  renderProgress();
+}
+
+function rolarDadoEscalacao(){
+  const box = document.getElementById('dado-esc');
+  if(box){box.classList.add('rolling');setTimeout(()=>box&&box.classList.remove('rolling'),500);}
+  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  let i=0;
+  const interval=setInterval(()=>{
+    if(box) box.textContent=faces[Math.floor(Math.random()*6)];
+    i++;
+    if(i>15){
+      clearInterval(interval);
+      state.timePosAtual=TIMES[Math.floor(Math.random()*TIMES.length)];
+      atualizarEscolhaUI();
+    }
+  },80);
 }
 
 function getPosicoesCampo(){
@@ -789,24 +842,30 @@ function renderCampo(){
 }
 
 function selecionarPosicao(idx){
-  state.posAtiva=idx;
-  renderCampo();
-  const jog = state.meuTime.jogadores[idx];
-  document.getElementById('escolha-pos-title').textContent = jog.pos+' — '+jog.nome;
-  document.getElementById('escolha-hint').textContent = 'Selecione um jogador';
-  renderJogadoresList(idx);
+  const feitos = Object.keys(state.escalacao).length;
+  // Só permite clicar em posições já preenchidas ou a atual
+  if(idx > feitos) return;
+  state.posicaoAtual = idx;
+  state.timePosAtual = null;
+  delete state.escalacao[idx];
+  document.getElementById('btn-confirmar').style.display='none';
+  atualizarEscolhaUI();
 }
 
 function renderJogadoresList(posIdx){
   const lista = document.getElementById('jogadores-list');
   lista.innerHTML='';
-  const pos = state.meuTime.jogadores[posIdx];
-  const escolhidosIds = Object.values(state.escalacao).map(e=>e.nome);
+  const t = state.timePosAtual;
+  if(!t) return;
 
-  state.meuTime.jogadores.forEach((jog,i)=>{
-    if(escolhidosIds.includes(jog.nome)&&state.escalacao[posIdx]?.nome!==jog.nome) return;
+  const header = document.createElement('div');
+  header.style.cssText='font-family:\'Oswald\',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;padding:8px 0 12px;margin-bottom:4px;border-bottom:1px solid var(--brown)';
+  header.textContent=`${t.time} · ${t.ano} · ${t.formacao}`;
+  lista.appendChild(header);
+
+  t.jogadores.forEach(jog=>{
     const card = document.createElement('div');
-    card.className='jogador-card'+(state.escalacao[posIdx]?.nome===jog.nome?' selected':'');
+    card.className='jogador-card';
     card.innerHTML=`
       <div class="jog-pos">${jog.pos}</div>
       <div class="jog-info">
@@ -816,18 +875,33 @@ function renderJogadoresList(posIdx){
     card.onclick=()=>escolherJogador(posIdx,jog);
     lista.appendChild(card);
   });
+
+  const reroll = document.createElement('div');
+  reroll.style.cssText='text-align:center;padding:14px;margin-top:10px;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);border:1px solid var(--brown);transition:.15s';
+  reroll.textContent='⚄  Sortear outro time';
+  reroll.onmouseenter=()=>reroll.style.borderColor='var(--gold)';
+  reroll.onmouseleave=()=>reroll.style.borderColor='var(--brown)';
+  reroll.onclick=()=>{state.timePosAtual=null;atualizarEscolhaUI();};
+  lista.appendChild(reroll);
 }
 
 function escolherJogador(posIdx, jog){
   state.escalacao[posIdx]=jog;
-  renderCampo();
-  renderProgress();
-  renderJogadoresList(posIdx);
-  const total=state.meuTime.jogadores.length;
+  state.timePosAtual=null;
+  const total=getPosicoesCampo().length;
   const feitos=Object.keys(state.escalacao).length;
-  if(feitos===total){
+  if(feitos>=total){
+    state.posicaoAtual=total-1;
+    renderCampo();
+    renderProgress();
     document.getElementById('btn-confirmar').style.display='block';
+    document.getElementById('escolha-pos-title').textContent='✓ Completo';
     document.getElementById('escolha-hint').textContent='Escalação completa! Confirme para começar.';
+    document.getElementById('jogadores-list').innerHTML='';
+    document.getElementById('esc-sub').textContent=`Formação: ${state.formacaoEscolhida} — Escalação completa`;
+  } else {
+    state.posicaoAtual=feitos;
+    atualizarEscolhaUI();
   }
 }
 
