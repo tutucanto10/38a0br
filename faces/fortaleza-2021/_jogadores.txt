@@ -1,0 +1,11 @@
+GK | Marcelo Boeck → marcelo-boeck.jpg
+RB | Tinga → tinga.jpg
+CB | Marcelo Benevenuto → marcelo-benevenuto.jpg
+CB | Titi → titi.jpg
+LB | Bruno Melo → bruno-melo.jpg
+CM | Felipe → felipe.jpg
+CM | Ronald → ronald.jpg
+MEI | Lucas Crispim → lucas-crispim.jpg
+RW | Yago Pikachu → yago-pikachu.jpg
+ST | Wellington Paulista → wellington-paulista.jpg
+LW | David → david.jpg

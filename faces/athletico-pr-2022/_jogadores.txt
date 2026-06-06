@@ -1,0 +1,11 @@
+GK | Bento → bento.jpg
+RB | Khellven → khellven.jpg
+CB | Thiago Heleno → thiago-heleno.jpg
+CB | Pedro Henrique → pedro-henrique.jpg
+LB | Abner → abner.jpg
+CM | Hugo Moura → hugo-moura.jpg
+CM | Fernandinho → fernandinho.jpg
+MEI | David Terans → david-terans.jpg
+RW | Vitor Roque → vitor-roque.jpg
+ST | Pablo → pablo.jpg
+LW | Canobbio → canobbio.jpg

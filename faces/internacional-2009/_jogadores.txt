@@ -1,0 +1,11 @@
+GK | Lauro → lauro.jpg
+RB | Nei → nei.jpg
+CB | Bolívar → bolivar.jpg
+CB | Índio → indio.jpg
+LB | Kléber → kleber.jpg
+CM | Sandro → sandro.jpg
+CM | Guiñazu → guinazu.jpg
+MEI | Andrés D'Alessandro → andres-d-alessandro.jpg
+RW | Taison → taison.jpg
+ST | Alecsandro → alecsandro.jpg
+LW | Giuliano → giuliano.jpg

@@ -1,0 +1,11 @@
+GK | Weverton → weverton.jpg
+RB | Marcos Rocha → marcos-rocha.jpg
+CB | Gustavo Gómez → gustavo-gomez.jpg
+CB | Murilo → murilo.jpg
+LB | Piquerez → piquerez.jpg
+CM | Zé Rafael → ze-rafael.jpg
+CM | Richard Ríos → richard-rios.jpg
+MEI | Raphael Veiga → raphael-veiga.jpg
+RW | Rony → rony.jpg
+ST | Endrick → endrick.jpg
+LW | Dudu → dudu.jpg

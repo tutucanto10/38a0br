@@ -380,7 +380,8 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 <!-- ======== TELA ESCALAÇÃO ======== -->
 <div id="screen-escalacao" class="screen">
   <div class="escalacao-header">
-    <div>
+    <button class="btn btn-outline btn-sm" onclick="irPara('screen-home')" style="font-size:9px;letter-spacing:2px;padding:5px 11px;margin-right:14px;flex-shrink:0">← MENU</button>
+    <div style="flex:1;min-width:0">
       <div class="esc-title" id="esc-title">Monte seu time</div>
       <div class="esc-sub" id="esc-sub">Escolha os jogadores posição a posição</div>
     </div>
@@ -712,17 +713,34 @@ let state = {
 // ============================================================
 // OVERALL + MINIFACE
 // ============================================================
-function calcOverall(jog) {
-  // Ícones históricos: overrides manuais (fórmula não captura impacto real)
+function calcOverall(jog, ano) {
+  // 'Nome:POS' resolve colisões (ex: Maicon RB ≠ Maicon CM)
   const OVR = {
-    'Pelé':99,'Garrincha':96,'Zico':95,'Romário':94,'Ronaldo':93,
+    'Maicon:RB':90,'Alex:MEI':88,
+    // Pelé único 99
+    'Pelé':99,
+    // Classe mundial
+    'Garrincha':96,'Zico':95,'Romário':94,'Ronaldo':93,
     'Ronaldinho Gaúcho':92,'Falcão':91,'Rogério Ceni':91,
-    'Rivaldo':90,'Roberto Carlos':90,'Cafu':89,'Roberto Dinamite':89,
+    'Rivaldo':90,'Roberto Carlos':90,'Marcelo':88,
+    // Ícones de alto nível
+    'Cafu':89,'Roberto Dinamite':89,'Carlos Tévez':89,
     'Juninho Pernambucano':88,'Jairzinho':88,'Carlos Alberto':88,
     'Nilton Santos':87,'Tostão':87,'Gérson':87,'Júnior':87,
-    'Didi':86,'Dirceu Lopes':86,'Conca':86,"D'Alessandro":85,
-    'Ademir da Guia':85,'Fred':84,'Gabigol':85,'Hulk':83,
+    "D'Alessandro":86,'Conca':86,'Didi':86,'Dirceu Lopes':86,
+    'Robinho':85,'Gabigol':85,'De Arrascaeta':85,'Cássio':85,
+    'Deco':84,'Fred':84,'Júlio César':84,'Fernandinho':84,
+    'Pedro':83,'Hulk':83,'Weverton':83,'Dudu':83,
+    'Raphael Veiga':83,'Germán Cano':83,'André':83,
+    'Arthur':82,'Paulinho':82,'Hernanes':82,'Miranda':82,
+    'Marcelo Grohe':82,'Bruno Henrique':82,'Everton Cebolinha':82,
+    'Lucho González':81,'Everton Ribeiro':81,'Elano':82,
+    'Victor':81,'Rafael Sóbis':80,'Kléberson':80,
+    'Luan':80,'Alex Mineiro':80,'Felipe Melo':78,
+    'Ademir da Guia':85,'Maicon Roque':79,
   };
+  const kp=`${jog.nome}:${jog.pos}`;
+  if(OVR[kp]!==undefined) return OVR[kp];
   if(OVR[jog.nome]!==undefined) return OVR[jog.nome];
 
   const isGK  = jog.pos==='GK';
@@ -740,18 +758,26 @@ function calcOverall(jog) {
     const r = jog.jogos>0?jog.gols/jog.jogos:0;
     score = Math.min(r/0.65,1)*0.45 + Math.min(jog.gols/280,1)*0.55;
   }
-  return Math.min(98, Math.max(70, Math.round(70 + score*28)));
+  // Times dos anos 50-70: todos jogadores são lendas, mínimo 80
+  const minOvr = (ano && ano < 1980) ? 80 : 70;
+  return Math.min(98, Math.max(minOvr, Math.round(70 + score*28)));
 }
 function ovrTier(o){return o>=92?'legend':o>=84?'gold':o>=77?'silver':'bronze';}
-function miniface(jog){
-  const ovr=calcOverall(jog);
+function slugify(s){
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+function miniface(jog, ctx){
+  const ovr=calcOverall(jog, ctx?.ano);
   const tier=ovrTier(ovr);
   const ini=jog.nome.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const key=encodeURIComponent(jog.nome);
   const cached=wikiPhotoCache[jog.nome];
   const photoStyle=cached?` style="background-image:url('${cached}')"`:'' ;
   const extraClass=cached?' has-photo':'';
-  return `<div class="miniface tier-${tier}${extraClass}" data-wiki="${key}"${photoStyle}>${ini}<span class="ovr-badge">${ovr}</span></div>`;
+  const localPath=ctx?`faces/${slugify(ctx.time)}-${ctx.ano}/${slugify(jog.nome)}.jpg`:'';
+  const localAttr=localPath?` data-local="${localPath}"`:'';
+  return `<div class="miniface tier-${tier}${extraClass}" data-wiki="${key}"${localAttr}${photoStyle}>${ini}<span class="ovr-badge">${ovr}</span></div>`;
 }
 
 async function fetchWikiPhoto(nome){
@@ -775,18 +801,34 @@ function applyWikiPhoto(el,url){
   el.classList.add('has-photo');
 }
 
+function tryImg(src){
+  return new Promise(r=>{const i=new Image();i.onload=()=>r(src);i.onerror=()=>r(null);i.src=src;});
+}
+
 function updateMinifaces(){
   document.querySelectorAll('.miniface[data-wiki]').forEach(el=>{
     const nome=decodeURIComponent(el.dataset.wiki);
+    const local=el.dataset.local;
+    const wKey=el.dataset.wiki;
+
     if(wikiPhotoCache[nome]!==undefined){
       if(wikiPhotoCache[nome]) applyWikiPhoto(el,wikiPhotoCache[nome]);
       return;
     }
     wikiPhotoCache[nome]=null;
-    fetchWikiPhoto(nome).then(url=>{
+
+    const apply=(url)=>{
+      if(!url) return;
       wikiPhotoCache[nome]=url;
-      if(url) document.querySelectorAll(`.miniface[data-wiki="${el.dataset.wiki}"]`).forEach(e=>applyWikiPhoto(e,url));
-    });
+      document.querySelectorAll(`.miniface[data-wiki="${wKey}"]`).forEach(e=>applyWikiPhoto(e,url));
+    };
+
+    if(local){
+      // Foto local tem prioridade; se não existir, cai no Wikipedia
+      tryImg(local).then(url=>url?apply(url):fetchWikiPhoto(nome).then(apply));
+    } else {
+      fetchWikiPhoto(nome).then(apply);
+    }
   });
 }
 
@@ -1244,7 +1286,7 @@ function renderJogadoresList(){
     card.className='jogador-card'+(isSelecionado?' selected':'');
     const posCompats=(POS_COMPAT[jog.pos]||[jog.pos]).map(p=>`<span class="pos-tag">${p}</span>`).join('');
     card.innerHTML=`
-      ${miniface(jog)}
+      ${miniface(jog, t)}
       <div class="jog-info">
         <div class="jog-name">${jog.nome}</div>
         <div style="margin:3px 0">${posCompats}</div>

@@ -1,0 +1,11 @@
+GK | Fernando Henrique → fernando-henrique.jpg
+RB | Mariano → mariano.jpg
+CB | Gum → gum.jpg
+CB | Leandro Euzébio → leandro-euzebio.jpg
+LB | Carlinhos → carlinhos.jpg
+CM | Diguinho → diguinho.jpg
+CM | Deco → deco.jpg
+MEI | Conca → conca.jpg
+RW | Washington → washington.jpg
+ST | Fred → fred.jpg
+LW | Marcão → marcao.jpg

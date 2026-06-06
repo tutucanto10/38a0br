@@ -1,0 +1,11 @@
+GK | Everson → everson.jpg
+RB | Guga → guga.jpg
+CB | Junior Alonso → junior-alonso.jpg
+CB | Nathan Silva → nathan-silva.jpg
+LB | Guilherme Arana → guilherme-arana.jpg
+CM | Allan → allan.jpg
+CM | Jair → jair.jpg
+MEI | Nacho Fernández → nacho-fernandez.jpg
+RW | Savarino → savarino.jpg
+ST | Hulk → hulk.jpg
+LW | Keno → keno.jpg

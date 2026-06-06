@@ -1,0 +1,11 @@
+GK | Benítez → benitez.jpg
+RB | Tarciso → tarciso.jpg
+CB | Figueroa → figueroa.jpg
+CB | Mauro Pastor → mauro-pastor.jpg
+LB | Vacaria → vacaria.jpg
+CM | Falcão → falcao.jpg
+CM | Batista → batista.jpg
+MEI | Carpegiani → carpegiani.jpg
+RW | Valdomiro → valdomiro.jpg
+ST | Chico Spina → chico-spina.jpg
+LW | Bira → bira.jpg

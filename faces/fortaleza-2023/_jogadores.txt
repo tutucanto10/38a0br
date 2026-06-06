@@ -1,0 +1,11 @@
+GK | João Ricardo → joao-ricardo.jpg
+RB | Tinga → tinga.jpg
+CB | Brítez → britez.jpg
+CB | Titi → titi.jpg
+LB | Bruno Pacheco → bruno-pacheco.jpg
+CM | Caio Alexandre → caio-alexandre.jpg
+CM | Hércules → hercules.jpg
+MEI | Tomás Pochettino → tomas-pochettino.jpg
+RW | Yago Pikachu → yago-pikachu.jpg
+ST | Lucero → lucero.jpg
+LW | Moisés → moises.jpg

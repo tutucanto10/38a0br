@@ -1,0 +1,11 @@
+GK | Fábio → fabio.jpg
+RB | Samuel Xavier → samuel-xavier.jpg
+CB | Nino → nino.jpg
+CB | Felipe Melo → felipe-melo.jpg
+LB | Marcelo → marcelo.jpg
+CM | André → andre.jpg
+CM | Martinelli → martinelli.jpg
+MEI | Ganso → ganso.jpg
+RW | Jhon Arias → jhon-arias.jpg
+ST | Germán Cano → german-cano.jpg
+LW | Keno → keno.jpg

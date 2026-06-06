@@ -1,0 +1,11 @@
+GK | Raul → raul.jpg
+RB | Pedro Paulo → pedro-paulo.jpg
+CB | Procópio → procopio.jpg
+CB | William → william.jpg
+LB | Eustáquio → eustaquio.jpg
+CM | Zé Carlos → ze-carlos.jpg
+CM | Piazza → piazza.jpg
+MEI | Tostão → tostao.jpg
+RW | Natal → natal.jpg
+ST | Evaldo → evaldo.jpg
+LW | Dirceu Lopes → dirceu-lopes.jpg

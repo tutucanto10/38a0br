@@ -1,0 +1,11 @@
+GK | Santos → santos.jpg
+RB | Rodinei → rodinei.jpg
+CB | David Luiz → david-luiz.jpg
+CB | Léo Pereira → leo-pereira.jpg
+LB | Filipe Luís → filipe-luis.jpg
+CM | Thiago Maia → thiago-maia.jpg
+CM | João Gomes → joao-gomes.jpg
+MEI | De Arrascaeta → de-arrascaeta.jpg
+RW | Bruno Henrique → bruno-henrique.jpg
+ST | Pedro → pedro.jpg
+LW | Everton Ribeiro → everton-ribeiro.jpg

@@ -1,0 +1,11 @@
+GK | Zetti → zetti.jpg
+RB | Cafu → cafu.jpg
+CB | Ronaldão → ronaldao.jpg
+CB | Adílson → adilson.jpg
+LB | Ronaldo Luiz → ronaldo-luiz.jpg
+CM | Pintado → pintado.jpg
+CM | Dinho → dinho.jpg
+MEI | Raí → rai.jpg
+RW | Müller → muller.jpg
+ST | Palhinha → palhinha.jpg
+LW | Macedo → macedo.jpg

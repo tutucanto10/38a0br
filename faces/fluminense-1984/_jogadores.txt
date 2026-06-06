@@ -1,0 +1,11 @@
+GK | Paulo Vítor → paulo-vitor.jpg
+RB | Aldo → aldo.jpg
+CB | Duílio → duilio.jpg
+CB | Edinho → edinho.jpg
+LB | Branco → branco.jpg
+CM | Vivinho → vivinho.jpg
+CM | Delei → delei.jpg
+MEI | Assis → assis.jpg
+RW | Romerito → romerito.jpg
+ST | Washington → washington.jpg
+LW | Tato → tato.jpg

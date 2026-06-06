@@ -1,0 +1,11 @@
+GK | Hélton → helton.jpg
+RB | Russo → russo.jpg
+CB | Mauro Galvão → mauro-galvao.jpg
+CB | Odvan → odvan.jpg
+LB | Gilberto → gilberto.jpg
+CM | Amaral → amaral.jpg
+CM | Juninho Pernambucano → juninho-pernambucano.jpg
+MEI | Pedrinho → pedrinho.jpg
+RW | Euller → euller.jpg
+ST | Romário → romario.jpg
+LW | Viola → viola.jpg

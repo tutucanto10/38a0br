@@ -1,0 +1,11 @@
+GK | Raul → raul.jpg
+RB | Leandro → leandro.jpg
+CB | Marinho → marinho.jpg
+CB | Mozer → mozer.jpg
+LB | Júnior → junior.jpg
+CM | Andrade → andrade.jpg
+CM | Adílio → adilio.jpg
+MEI | Zico → zico.jpg
+RW | Tita → tita.jpg
+ST | Nunes → nunes.jpg
+LW | Lico → lico.jpg

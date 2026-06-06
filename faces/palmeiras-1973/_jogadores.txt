@@ -1,0 +1,11 @@
+GK | Leão → leao.jpg
+RB | Eurico → eurico.jpg
+CB | Luís Pereira → luis-pereira.jpg
+CB | Alfredo Mostarda → alfredo-mostarda.jpg
+LB | Zé Maria → ze-maria.jpg
+CM | Dudu → dudu.jpg
+CM | Nei → nei.jpg
+MEI | Ademir da Guia → ademir-da-guia.jpg
+RW | Edu → edu.jpg
+ST | César Maluco → cesar-maluco.jpg
+LW | Leivinha → leivinha.jpg

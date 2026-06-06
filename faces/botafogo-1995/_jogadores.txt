@@ -1,0 +1,11 @@
+GK | Wágner → wagner.jpg
+RB | Gonçalves → goncalves.jpg
+CB | Wilson Gottardo → wilson-gottardo.jpg
+CB | Carlos Alberto Dias → carlos-alberto-dias.jpg
+LB | Sérgio Manoel → sergio-manoel.jpg
+CM | Cocada → cocada.jpg
+CM | Valdeir → valdeir.jpg
+MEI | Donizete → donizete.jpg
+RW | Wilson Mineiro → wilson-mineiro.jpg
+ST | Túlio → tulio.jpg
+LW | Paulinho McLaren → paulinho-mclaren.jpg

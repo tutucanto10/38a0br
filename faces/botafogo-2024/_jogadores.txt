@@ -1,0 +1,11 @@
+GK | John → john.jpg
+RB | Mateus Ponte → mateus-ponte.jpg
+CB | Bastos → bastos.jpg
+CB | Adryelson → adryelson.jpg
+LB | Alex Telles → alex-telles.jpg
+CM | Marlon Freitas → marlon-freitas.jpg
+CM | Gregore → gregore.jpg
+MEI | Almada → almada.jpg
+RW | Luiz Henrique → luiz-henrique.jpg
+ST | Igor Jesus → igor-jesus.jpg
+LW | Júnior Santos → junior-santos.jpg

@@ -1,0 +1,11 @@
+GK | Gilmar → gilmar.jpg
+RB | Lima → lima.jpg
+CB | Mauro Ramos → mauro-ramos.jpg
+CB | Calvet → calvet.jpg
+LB | Dalmo → dalmo.jpg
+CM | Zito → zito.jpg
+CM | Mengálvio → mengalvio.jpg
+MEI | Pelé → pele.jpg
+RW | Dorval → dorval.jpg
+ST | Coutinho → coutinho.jpg
+LW | Pepe → pepe.jpg

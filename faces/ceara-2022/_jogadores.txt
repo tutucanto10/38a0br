@@ -1,0 +1,11 @@
+GK | João Ricardo → joao-ricardo.jpg
+RB | Michel Macedo → michel-macedo.jpg
+CB | Luiz Otávio → luiz-otavio.jpg
+CB | Gabriel Lacerda → gabriel-lacerda.jpg
+LB | Victor Luis → victor-luis.jpg
+CM | Richardson → richardson.jpg
+CM | Fernando Sobral → fernando-sobral.jpg
+MEI | Vina → vina.jpg
+RW | Lima → lima.jpg
+ST | Cléber → cleber.jpg
+LW | Erick → erick.jpg

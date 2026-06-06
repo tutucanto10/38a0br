@@ -1,0 +1,11 @@
+GK | Adílson → adilson.jpg
+RB | Beto → beto.jpg
+CB | Índio → indio.jpg
+CB | Régis → regis.jpg
+LB | Reginaldo Nascimento → reginaldo-nascimento.jpg
+CM | Vavá → vava.jpg
+CM | Renato → renato.jpg
+MEI | Ramon → ramon.jpg
+RW | Cláudio Adão → claudio-adao.jpg
+ST | Lima → lima.jpg
+LW | Catê → cate.jpg

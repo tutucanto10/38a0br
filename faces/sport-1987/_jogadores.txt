@@ -1,0 +1,11 @@
+GK | Flávio → flavio.jpg
+RB | Aílton → ailton.jpg
+CB | Bonamigo → bonamigo.jpg
+CB | Givanildo → givanildo.jpg
+LB | Marquinhos → marquinhos.jpg
+CM | Zé Carlos → ze-carlos.jpg
+CM | Marcos Mileu → marcos-mileu.jpg
+MEI | Ricardinho → ricardinho.jpg
+RW | Tita → tita.jpg
+ST | Ribamar → ribamar.jpg
+LW | Marcelo Ramos → marcelo-ramos.jpg

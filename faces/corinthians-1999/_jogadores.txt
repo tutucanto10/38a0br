@@ -1,0 +1,11 @@
+GK | Dida → dida.jpg
+RB | Índio → indio.jpg
+CB | João Carlos → joao-carlos.jpg
+CB | Antônio Carlos → antonio-carlos.jpg
+LB | Kléber → kleber.jpg
+CM | Vampeta → vampeta.jpg
+CM | Ricardinho → ricardinho.jpg
+MEI | Rincón → rincon.jpg
+RW | Edílson → edilson.jpg
+ST | Luizão → luizao.jpg
+LW | Marcelinho Carioca → marcelinho-carioca.jpg

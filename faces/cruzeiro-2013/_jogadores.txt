@@ -1,0 +1,11 @@
+GK | Fábio → fabio.jpg
+RB | Mayke → mayke.jpg
+CB | Dedé → dede.jpg
+CB | Bruno Rodrigo → bruno-rodrigo.jpg
+LB | Egídio → egidio.jpg
+CM | Lucas Silva → lucas-silva.jpg
+CM | Nilton → nilton.jpg
+MEI | Ricardo Goulart → ricardo-goulart.jpg
+RW | Júlio Baptista → julio-baptista.jpg
+ST | Borges → borges.jpg
+LW | Everton Ribeiro → everton-ribeiro.jpg

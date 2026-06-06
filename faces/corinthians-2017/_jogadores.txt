@@ -1,0 +1,11 @@
+GK | Cássio → cassio.jpg
+RB | Fagner → fagner.jpg
+CB | Balbuena → balbuena.jpg
+CB | Pablo → pablo.jpg
+LB | Guilherme Arana → guilherme-arana.jpg
+CM | Gabriel → gabriel.jpg
+CM | Maycon → maycon.jpg
+MEI | Rodriguinho → rodriguinho.jpg
+RW | Romero → romero.jpg
+ST | Jô → jo.jpg
+LW | Clayson → clayson.jpg

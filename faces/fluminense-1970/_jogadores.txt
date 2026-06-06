@@ -1,0 +1,11 @@
+GK | Félix → felix.jpg
+RB | Carlos Alberto → carlos-alberto.jpg
+CB | Assis → assis.jpg
+CB | Vilson Tadei → vilson-tadei.jpg
+LB | Marco Antônio → marco-antonio.jpg
+CM | Denilson → denilson.jpg
+CM | Lula → lula.jpg
+MEI | Cafuringa → cafuringa.jpg
+RW | Flávio → flavio.jpg
+ST | Toninho Guerreiro → toninho-guerreiro.jpg
+LW | Gérson → gerson.jpg
