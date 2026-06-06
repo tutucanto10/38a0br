@@ -709,12 +709,36 @@ let state = {
 // OVERALL + MINIFACE
 // ============================================================
 function calcOverall(jog) {
-  const gW = {GK:0,RB:.2,CB:.2,LB:.2,CM:.5,MEI:.7,RW:.8,ST:.85,LW:.8}[jog.pos]??0.5;
-  const jW = {GK:1,RB:.8,CB:.8,LB:.8,CM:.5,MEI:.3,RW:.2,ST:.15,LW:.2}[jog.pos]??0.5;
-  const raw = Math.min(100,(jog.gols*gW/500+jog.jogos*jW/1237)*100);
-  return Math.min(99,Math.max(60,Math.round(60+raw*0.39)));
+  // Ícones históricos: overrides manuais (fórmula não captura impacto real)
+  const OVR = {
+    'Pelé':99,'Garrincha':96,'Zico':95,'Romário':94,'Ronaldo':93,
+    'Ronaldinho Gaúcho':92,'Falcão':91,'Rogério Ceni':91,
+    'Rivaldo':90,'Roberto Carlos':90,'Cafu':89,'Roberto Dinamite':89,
+    'Juninho Pernambucano':88,'Jairzinho':88,'Carlos Alberto':88,
+    'Nilton Santos':87,'Tostão':87,'Gérson':87,'Júnior':87,
+    'Didi':86,'Dirceu Lopes':86,'Conca':86,"D'Alessandro":85,
+    'Ademir da Guia':85,'Fred':84,'Gabigol':85,'Hulk':83,
+  };
+  if(OVR[jog.nome]!==undefined) return OVR[jog.nome];
+
+  const isGK  = jog.pos==='GK';
+  const isDef = ['RB','CB','LB'].includes(jog.pos);
+  const isMid = ['CM','MEI','RM','LM'].includes(jog.pos);
+  let score;
+  if(isGK){
+    score = Math.min(jog.jogos/1200,1);
+  } else if(isDef){
+    score = Math.min(jog.jogos/700,1)*0.75 + Math.min(jog.gols/80,1)*0.25;
+  } else if(isMid){
+    const r = jog.jogos>0?jog.gols/jog.jogos:0;
+    score = Math.min(r/0.55,1)*0.35 + Math.min(jog.gols/350,1)*0.35 + Math.min(jog.jogos/400,1)*0.30;
+  } else {
+    const r = jog.jogos>0?jog.gols/jog.jogos:0;
+    score = Math.min(r/0.65,1)*0.45 + Math.min(jog.gols/280,1)*0.55;
+  }
+  return Math.min(98, Math.max(70, Math.round(70 + score*28)));
 }
-function ovrTier(o){return o>=90?'legend':o>=80?'gold':o>=70?'silver':'bronze';}
+function ovrTier(o){return o>=92?'legend':o>=84?'gold':o>=77?'silver':'bronze';}
 function miniface(jog){
   const ovr=calcOverall(jog);
   const tier=ovrTier(ovr);
