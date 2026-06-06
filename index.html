@@ -774,8 +774,9 @@ function slugify(s){
 }
 function crestImg(time, size=28){
   if(!time) return '';
-  const src=`crests/${slugify(time)}.png`;
-  return `<img src="${src}" width="${size}" height="${size}" class="crest-img" style="margin-right:${Math.round(size/4)}px" onerror="this.style.display='none'">`;
+  const slug=slugify(time);
+  const svgSrc=`crests/${slug}.svg`;
+  return `<img src="crests/${slug}.png" width="${size}" height="${size}" class="crest-img" style="margin-right:${Math.round(size/4)}px" onerror="if(this.src.endsWith('.png')){this.src='${svgSrc}'}else{this.style.display='none'}">`;
 }
 function miniface(jog, ctx){
   const ovr=calcOverall(jog, ctx?.ano);
