@@ -206,11 +206,13 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 
 /* MINIFACE + OVERALL */
-.miniface{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:.5px;position:relative;flex-shrink:0}
+.miniface{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:.5px;position:relative;flex-shrink:0;overflow:hidden}
 .miniface.tier-bronze{background:#3D2B15;border:2px solid #7B5C2E;color:#A07840}
 .miniface.tier-silver{background:#252535;border:2px solid #6A6A80;color:#9898AA}
 .miniface.tier-gold{background:#2A1F0A;border:2px solid var(--gold);color:var(--gold)}
 .miniface.tier-legend{background:#180820;border:2px solid #B07FD4;color:#C39BD3;box-shadow:0 0 8px rgba(176,127,212,.3)}
+.miniface.has-photo{background-size:cover;background-position:center top;font-size:0}
+.miniface.has-photo .ovr-badge{color:#fff!important;text-shadow:0 1px 3px #000;border-color:#fff}
 .ovr-badge{position:absolute;bottom:-5px;right:-5px;background:var(--darker);border:1px solid currentColor;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;padding:1px 3px;border-radius:2px;line-height:1;color:inherit}
 .pos-tag{font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:1px;border:1px solid var(--brown);padding:1px 4px;border-radius:2px;color:var(--muted);margin-right:3px}
 
@@ -686,6 +688,8 @@ function _sortearTime(){
 // ============================================================
 // ESTADO
 // ============================================================
+const wikiPhotoCache = {};
+
 let state = {
   meuTime: null,
   escalacao: {},
@@ -743,7 +747,47 @@ function miniface(jog){
   const ovr=calcOverall(jog);
   const tier=ovrTier(ovr);
   const ini=jog.nome.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  return `<div class="miniface tier-${tier}">${ini}<span class="ovr-badge">${ovr}</span></div>`;
+  const key=encodeURIComponent(jog.nome);
+  const cached=wikiPhotoCache[jog.nome];
+  const photoStyle=cached?` style="background-image:url('${cached}')"`:'' ;
+  const extraClass=cached?' has-photo':'';
+  return `<div class="miniface tier-${tier}${extraClass}" data-wiki="${key}"${photoStyle}>${ini}<span class="ovr-badge">${ovr}</span></div>`;
+}
+
+async function fetchWikiPhoto(nome){
+  const url=`https://pt.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(nome)}&prop=pageimages&format=json&pithumbsize=130&origin=*`;
+  try{
+    const ctrl=new AbortController();
+    setTimeout(()=>ctrl.abort(),5000);
+    const r=await fetch(url,{signal:ctrl.signal});
+    const d=await r.json();
+    const pages=d.query?.pages;
+    if(!pages) return null;
+    const pg=Object.values(pages)[0];
+    if(pg.missing!==undefined) return null;
+    return pg?.thumbnail?.source||null;
+  }catch{return null;}
+}
+
+function applyWikiPhoto(el,url){
+  if(!url||!el) return;
+  el.style.backgroundImage=`url('${url}')`;
+  el.classList.add('has-photo');
+}
+
+function updateMinifaces(){
+  document.querySelectorAll('.miniface[data-wiki]').forEach(el=>{
+    const nome=decodeURIComponent(el.dataset.wiki);
+    if(wikiPhotoCache[nome]!==undefined){
+      if(wikiPhotoCache[nome]) applyWikiPhoto(el,wikiPhotoCache[nome]);
+      return;
+    }
+    wikiPhotoCache[nome]=null;
+    fetchWikiPhoto(nome).then(url=>{
+      wikiPhotoCache[nome]=url;
+      if(url) document.querySelectorAll(`.miniface[data-wiki="${el.dataset.wiki}"]`).forEach(e=>applyWikiPhoto(e,url));
+    });
+  });
 }
 
 // ============================================================
@@ -1217,6 +1261,7 @@ function renderJogadoresList(){
   reroll.onmouseleave=()=>reroll.style.borderColor='var(--brown)';
   reroll.onclick=()=>{state.timePosAtual=null;state.jogadorSelecionado=null;atualizarEscolhaUI();};
   lista.appendChild(reroll);
+  updateMinifaces();
 }
 
 function escolherJogador(jog){
