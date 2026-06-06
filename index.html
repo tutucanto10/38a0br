@@ -1037,7 +1037,9 @@ function selecionarFormacao(f){
 }
 
 function irParaDadoStep(){
-  iniciarEscalacao();
+  document.getElementById('dado-formacao-step').style.display='none';
+  document.getElementById('dado-content').style.display='flex';
+  atualizarDadoUI();
 }
 
 // ============================================================
@@ -1109,8 +1111,6 @@ function mostrarResultadoDado(time){
 }
 
 function dadoProximo(){
-  state.meuTime = state.dadoTime1;
-  gerarRodadas();
   iniciarEscalacao();
 }
 
@@ -1144,21 +1144,21 @@ function iniciarEscalacao(){
   state.timePosAtual=null;
   state.jogadorSelecionado=null;
 
-  // time sintético — slots baseados nas posições da formação escolhida
   const posicoes = POSICOES_CAMPO[state.formacaoEscolhida] || POSICOES_CAMPO['4-4-2'];
+  const base = state.dadoTime1 || {time:'Meu Time', ano:''};
   state.meuTime = {
-    time:'Meu Time',
-    ano: state.formacaoEscolhida,
+    time: base.time,
+    ano:  base.ano,
     formacao: state.formacaoEscolhida,
     jogadores: posicoes.map(p=>({pos:p.pos, nome:p.pos, jogos:0, gols:0}))
   };
 
   gerarRodadas();
 
-  const _dt=state.dadoTime1;
-  document.getElementById('esc-title').innerHTML = _dt
-    ?`${crestImg(_dt.time,26)} ${_dt.time} <span style="font-size:14px;color:var(--muted);letter-spacing:1px">${_dt.ano}</span>`
-    :'Monte seu time';
+  const t = state.meuTime;
+  document.getElementById('esc-title').innerHTML = t.time !== 'Meu Time'
+    ? `${crestImg(t.time,26)} ${t.time} <span style="font-size:14px;color:var(--muted);letter-spacing:1px">${t.ano}</span>`
+    : 'Monte seu time';
   document.getElementById('esc-sub').textContent = `Formação: ${state.formacaoEscolhida} — Posição 1 de 11`;
   document.getElementById('btn-confirmar').style.display='none';
   renderCampo();
