@@ -1,0 +1,19 @@
+Athletico-PR → athletico-pr.png
+Atlético-MG → atletico-mg.png
+Bahia → bahia.png
+Botafogo → botafogo.png
+Ceará → ceara.png
+Corinthians → corinthians.png
+Coritiba → coritiba.png
+Cruzeiro → cruzeiro.png
+Flamengo → flamengo.png
+Fluminense → fluminense.png
+Fortaleza → fortaleza.png
+Grêmio → gremio.png
+Internacional → internacional.png
+Palmeiras → palmeiras.png
+Santos → santos.png
+Sport → sport.png
+São Paulo → sao-paulo.png
+Vasco → vasco.png
+Vitória → vitoria.png
