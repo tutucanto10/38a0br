@@ -115,6 +115,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 .player-circle{width:36px;height:36px;border-radius:50%;background:var(--brown);border:2px solid var(--muted);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:8px;color:var(--muted);letter-spacing:1px;transition:.2s;font-weight:700}
 .player-circle.filled{background:var(--gold);border-color:var(--gold-light);color:var(--darker)}
 .player-circle.active-slot{border-color:var(--gold-light);animation:pulse-slot 1s ease-in-out infinite}
+.player-circle.blocked{opacity:.2;cursor:not-allowed}
 @keyframes pulse-slot{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.5)}50%{box-shadow:0 0 0 6px rgba(201,168,76,0)}}
 .player-label{font-family:'Oswald',sans-serif;font-size:8px;color:var(--gold-light);white-space:nowrap;letter-spacing:.5px;max-width:60px;overflow:hidden;text-overflow:ellipsis}
 .player-label.empty{color:var(--muted)}
@@ -332,7 +333,8 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
     </div>
     <div id="dado-actions" style="margin-top:24px;display:none;flex-direction:column;align-items:center;gap:12px">
       <button class="btn btn-gold" id="btn-dado-next" onclick="dadoProximo()">Continuar →</button>
-      <button class="btn btn-outline btn-sm" onclick="rolarDado()">Rolar de novo</button>
+      <button class="btn btn-outline btn-sm" id="btn-rolar-novo" onclick="rolarDado()">Rolar de novo</button>
+      <div id="dado-rolagens-info" style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted)"></div>
     </div>
   </div>
 </div>
@@ -612,7 +614,8 @@ let state = {
   dadoTime1: null,
   formacaoEscolhida: null,
   timePosAtual: null,
-  jogadorSelecionado: null
+  jogadorSelecionado: null,
+  dadoRolagens: 0
 };
 
 // ============================================================
@@ -641,6 +644,7 @@ function irParaDado(){
   state.escalacao={};
   state.rodadas=[];
   state.record={v:0,e:0,d:0,gp:0,gc:0};
+  state.dadoRolagens=0;
   // Resetar seleção de formação
   document.querySelectorAll('.formacao-card').forEach(c=>c.classList.remove('selected'));
   document.getElementById('btn-ir-dado').style.display='none';
@@ -671,6 +675,8 @@ function atualizarDadoUI(){
 }
 
 function rolarDado(){
+  if(state.dadoRolagens>=3) return;
+  state.dadoRolagens++;
   const box = document.getElementById('dado-box');
   box.classList.add('rolling');
   setTimeout(()=>box.classList.remove('rolling'),500);
@@ -700,6 +706,17 @@ function mostrarResultadoDado(time){
   const actions = document.getElementById('dado-actions');
   actions.style.display='flex';
   document.getElementById('btn-dado-next').textContent='Monte seu time →';
+
+  const restantes = 3 - state.dadoRolagens;
+  const btnRolar = document.getElementById('btn-rolar-novo');
+  const info = document.getElementById('dado-rolagens-info');
+  if(restantes<=0){
+    btnRolar.style.display='none';
+    info.textContent='Sem mais sorteios — este é seu time.';
+  } else {
+    btnRolar.style.display='';
+    info.textContent=`${restantes} sorteio${restantes!==1?'s':''} restante${restantes!==1?'s':''}`;
+  }
 }
 
 function dadoProximo(){
