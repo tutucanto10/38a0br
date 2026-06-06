@@ -205,6 +205,38 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 ::-webkit-scrollbar-thumb{background:var(--brown)}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 
+/* MINIFACE + OVERALL */
+.miniface{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:.5px;position:relative;flex-shrink:0}
+.miniface.tier-bronze{background:#3D2B15;border:2px solid #7B5C2E;color:#A07840}
+.miniface.tier-silver{background:#252535;border:2px solid #6A6A80;color:#9898AA}
+.miniface.tier-gold{background:#2A1F0A;border:2px solid var(--gold);color:var(--gold)}
+.miniface.tier-legend{background:#180820;border:2px solid #B07FD4;color:#C39BD3;box-shadow:0 0 8px rgba(176,127,212,.3)}
+.ovr-badge{position:absolute;bottom:-5px;right:-5px;background:var(--darker);border:1px solid currentColor;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;padding:1px 3px;border-radius:2px;line-height:1;color:inherit}
+
+/* NARRAÇÃO */
+.sim-narracao-box{border-left:2px solid var(--gold);padding:12px 16px;margin-bottom:20px;background:rgba(0,0,0,.15);display:none}
+.sim-narracao-linha{font-size:12px;color:var(--gold-light);font-style:italic;padding:3px 0;line-height:1.6}
+
+/* CONTEXTO */
+.dado-contexto{font-family:'Lato',sans-serif;font-size:12px;color:var(--muted);font-style:italic;margin-top:10px;max-width:320px;line-height:1.6;text-align:center}
+
+/* COPA */
+#screen-copa{align-items:stretch}
+.copa-header{background:var(--darker);border-bottom:2px solid var(--gold);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.copa-fase-label{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:3px}
+.copa-body{flex:1;overflow-y:auto;padding:24px 32px;max-width:720px;width:100%;margin:0 auto}
+.copa-fase-titulo{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--brown)}
+.copa-partida{background:var(--darker);border:1px solid var(--brown);padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.copa-partida.minha{border-color:var(--gold);background:rgba(201,168,76,.05)}
+.copa-partida.cpu{opacity:.6}
+.copa-time-nome{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--gold-light);letter-spacing:1px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.copa-time-nome.meu{color:var(--gold)}
+.copa-placar{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);min-width:54px;text-align:center;line-height:1}
+.copa-pen{font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:1px;color:var(--muted);text-align:center}
+.copa-tag{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:2px;white-space:nowrap}
+.copa-tag.win{background:rgba(106,176,76,.15);color:#6ab04c;border:1px solid #6ab04c}
+.copa-tag.lose{background:rgba(229,80,57,.15);color:#e55039;border:1px solid #e55039}
+
 /* ======================== SELEÇÃO DE FORMAÇÃO ======================== */
 .formacao-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
 .formacao-card{background:var(--darker);border:2px solid var(--brown);padding:20px 16px;cursor:pointer;transition:.15s;text-align:center}
@@ -243,7 +275,10 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
       <div class="label-top">Você está pronto?</div>
       <div class="hero-title">Você<br>venceria<br><em>38</em><br>rodadas?</div>
       <p class="hero-sub">Escolha um time histórico do Brasileirão. Enfrente 38 adversários lendários. O objetivo é terminar invicto. São poucos que conseguem.</p>
-      <button class="btn btn-gold" onclick="irParaDado()">⚄ &nbsp;Começar</button>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:0">
+        <button class="btn btn-gold" onclick="iniciarModo('brasileirao')">⚄ Brasileirão</button>
+        <button class="btn btn-outline" onclick="iniciarModo('copa')">⚽ Copa</button>
+      </div>
       <div class="stats-strip">
         <div class="stat-block">
           <div class="stat-label">Times</div>
@@ -414,9 +449,29 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
       <div class="sim-gols-title">Gols da partida</div>
       <div id="sim-gols-list"></div>
     </div>
+    <div class="sim-narracao-box" id="sim-narracao-box">
+      <div id="sim-narracao-list"></div>
+    </div>
     <div style="display:flex;gap:12px;justify-content:center">
       <button class="btn btn-gold" id="btn-proxima-rodada" onclick="proximaRodada()" style="display:none">Próxima rodada →</button>
       <button class="btn btn-outline" id="btn-ver-temporada" onclick="irParaTemporada()" style="display:none">Ver temporada</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== TELA COPA ======== -->
+<div id="screen-copa" class="screen">
+  <div class="copa-header">
+    <div class="logo"><div class="logo-main">38A0BR</div><div class="logo-sub">Copa</div></div>
+    <div style="text-align:right">
+      <div class="copa-fase-label" id="copa-fase-label">Oitavas de Final</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted)" id="copa-fase-sub">8 times avançam</div>
+    </div>
+  </div>
+  <div class="copa-body">
+    <div id="copa-bracket"></div>
+    <div style="text-align:center;margin-top:20px" id="copa-actions">
+      <button class="btn btn-gold" onclick="jogarPartidaCopa()">⚽ Jogar minha partida</button>
     </div>
   </div>
 </div>
@@ -615,7 +670,171 @@ let state = {
   formacaoEscolhida: null,
   timePosAtual: null,
   jogadorSelecionado: null,
-  dadoRolagens: 0
+  dadoRolagens: 0,
+  modoJogo: 'brasileirao',
+  copaFase: 0,
+  copaRodadas: [],
+  copaEliminado: false
+};
+
+// ============================================================
+// OVERALL + MINIFACE
+// ============================================================
+function calcOverall(jog) {
+  const gW = {GK:0,RB:.2,CB:.2,LB:.2,CM:.5,MEI:.7,RW:.8,ST:.85,LW:.8}[jog.pos]??0.5;
+  const jW = {GK:1,RB:.8,CB:.8,LB:.8,CM:.5,MEI:.3,RW:.2,ST:.15,LW:.2}[jog.pos]??0.5;
+  const raw = Math.min(100,(jog.gols*gW/500+jog.jogos*jW/1237)*100);
+  return Math.min(99,Math.max(60,Math.round(60+raw*0.39)));
+}
+function ovrTier(o){return o>=90?'legend':o>=80?'gold':o>=70?'silver':'bronze';}
+function miniface(jog){
+  const ovr=calcOverall(jog);
+  const tier=ovrTier(ovr);
+  const ini=jog.nome.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  return `<div class="miniface tier-${tier}">${ini}<span class="ovr-badge">${ovr}</span></div>`;
+}
+
+// ============================================================
+// NARRAÇÃO
+// ============================================================
+const NARRACOES = {
+  gol_att: [
+    "{j} domina na área, gira e chuta no canto. Goool!",
+    "Que finalização de {j}! Nem o goleiro se mexeu.",
+    "{j} estava livre e não perdoou. Mais um!",
+    "Lançamento preciso para {j}, que empurra para as redes.",
+    "{j} recebe, vira sobre o defensor e encobre o goleiro. Espetáculo!"
+  ],
+  gol_mid: [
+    "{j} avança pelo meio e chuta rasteiro. Gol de meia!",
+    "De fora da área, {j} acerta o ângulo. Que golaço!",
+    "{j} surge bem na jogada e decide com categoria."
+  ],
+  gol_def: [
+    "{j} aparece em bola parada e faz de cabeça!",
+    "O defensor {j} vira atacante e marca um lindo gol!"
+  ],
+  vitoria: [
+    "Resultado justo. O {time} controlou e saiu com os três pontos.",
+    "Pressão, criação e eficiência. O {time} dominou do início ao fim.",
+    "O {time} foi superior em todos os aspectos. Vitória merecida.",
+    "Mais uma para a conta. O {time} faz valer o favoritismo."
+  ],
+  empate: [
+    "Equilíbrio total. Nenhum dos times conseguiu abrir diferença.",
+    "Ponto dividido. Os dois times tiveram suas chances.",
+    "Jogo muito disputado, sem um vencedor claro. Empate justo.",
+    "Um ponto cada. Poderia ter terminado de qualquer jeito."
+  ],
+  derrota: [
+    "O adversário foi melhor hoje. O {time} precisa reagir.",
+    "Resultado difícil de engolir, mas o adversário mereceu.",
+    "Noite difícil para o {time}. Hora de recuperar o foco.",
+    "Derrota que dói, mas o campeonato ainda está em aberto."
+  ],
+  invicto: [
+    "{n} jogos sem perder. O {time} está construindo algo histórico.",
+    "A invencibilidade continua! {n} rodadas sem derrota para o {time}."
+  ]
+};
+
+function gerarNarracao(rod){
+  const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+  const linhas=[];
+  const meusGols=rod.gols.filter(g=>g.equipe==='meu').slice(0,2);
+  meusGols.forEach(g=>{
+    const jog=Object.values(state.escalacao).find(j=>j.nome===g.nome);
+    const pos=jog?.pos||'ST';
+    const pool=['ST','RW','LW'].includes(pos)?NARRACOES.gol_att:['CM','MEI'].includes(pos)?NARRACOES.gol_mid:NARRACOES.gol_def;
+    linhas.push(pick(pool).replace('{j}',g.nome.split(' ')[0]));
+  });
+  const res=rod.resultado==='win'?'vitoria':rod.resultado==='draw'?'empate':'derrota';
+  linhas.push(pick(NARRACOES[res]).replace('{time}',state.dadoTime1?.time||'Meu Time'));
+  const inv=state.rodadas.filter(r=>r.resultado&&r.resultado!=='lose').length;
+  if(inv>0&&inv%5===0) linhas.push(pick(NARRACOES.invicto).replace('{n}',inv).replace('{time}',state.dadoTime1?.time||'Meu Time'));
+  return linhas;
+}
+
+// ============================================================
+// CONTEXTOS HISTÓRICOS
+// ============================================================
+const CONTEXTOS = {
+  'Flamengo-1980':"O início da era dourada. Zico, Júnior e Adílio formavam um meio-campo imbatível no Maracanã.",
+  'Flamengo-1982':"O Fla mais lembrado de todos. Zico no auge, tricampeão Brasileiro e ídolo do mundo.",
+  'Flamengo-2019':"A era Gabigol. Arrascaeta e Bruno Henrique tornaram este Flamengo o mais dominante da era moderna.",
+  'Flamengo-2022':"Pedro assumiu a camisa 9 e o Fla seguiu colhendo títulos. Bicampeão da Libertadores.",
+  'Corinthians-1999':"O primeiro campeão do Mundo de Clubes da era moderna. Marcelinho Carioca era o maestro.",
+  'Corinthians-2005':"O Corinthians de Tévez. O astro argentino chegou por empréstimo e virou ídolo em Itaquera.",
+  'Corinthians-2011':"Bicampeão Brasileiro com Paulinho, Ralf e Emerson Sheik. A base que chegaria à Libertadores.",
+  'Corinthians-2017':"Cássio e Fagner lideraram o time que venceu o Brasileiro com folga. Solidez impecável.",
+  'Palmeiras-1973':"O Palmeiras de Ademir da Guia, o 'Divino'. César Maluco e Edu formavam um ataque lendário.",
+  'Palmeiras-1994':"Roberto Carlos na lateral, Rivaldo no ataque. O Verdão que foi campeão Brasileiro invicto.",
+  'Palmeiras-2018':"Dudu e Willian eram as referências do time mais organizado do Brasil.",
+  'Palmeiras-2023':"Raphael Veiga e o jovem Endrick. O Verdão bicampeão Brasileiro.",
+  'Fluminense-1970':"Félix, goleiro da Copa de 70, e Carlos Alberto Torres como capitão. Flu de garra.",
+  'Fluminense-1984':"Romerito e Washington. O Fluminense levou o Brasileiro com estilo e fé no Maracanã.",
+  'Fluminense-2010':"Fred e Conca foram os grandes nomes. O Flu bicampeão Brasileiro com muito brilho.",
+  'Fluminense-2023':"Germán Cano e Marcelo. Campeões da Libertadores com garra e técnica.",
+  'Santos-1962':"Pelé, Coutinho e Pepe. O time mais letal do mundo, bicampeão Intercontinental.",
+  'Santos-1965':"O Santos no auge de Pelé. Carlos Alberto na zaga e Dorval na ponta. Futebol-arte puro.",
+  'Santos-2002':"Robinho e Diego, a nova geração. O Santos voltou a brilhar com dois grandes talentos.",
+  'Santos-2004':"Robinho no auge e Diego distribuindo jogo. O Santos encantou o Brasil.",
+  'São Paulo-1977':"Serginho Chulapa era o artilheiro implacável. O tricolor com força pelo Morumbi.",
+  'São Paulo-1992':"O São Paulo tri-campeão do mundo. Raí, Cafu e Müller na era de Telê Santana.",
+  'São Paulo-2006':"Rogério Ceni e Dagoberto. Tri-campeão Brasileiro em quatro anos.",
+  'São Paulo-2008':"Hernanes, o Profeta, e Rogério Ceni, o goleiro goleador. Tricolor dominante.",
+  'Botafogo-1962':"Garrincha e Didi. O Botafogo reunia os maiores do futebol carioca.",
+  'Botafogo-1968':"Jairzinho e Gérson. A base da Seleção de 70 estava aqui. Futebol de outro mundo.",
+  'Botafogo-1995':"Túlio Maravilha foi o rei. O Estrela Solitária que encantava no General Severiano.",
+  'Botafogo-2024':"John e Igor Jesus. O Botafogo campeão Brasileiro após 29 anos de seca.",
+  'Vasco-1974':"Roberto Dinamite no auge. O Cruzmaltino era temido em São Januário.",
+  'Vasco-1989':"Romário com a camisa vascaína, antes de ir para a Europa. Um gênio em campo.",
+  'Vasco-1997':"Juninho Pernambucano e Edmundo. O Vasco que ganhou a Libertadores e era o time do povo.",
+  'Vasco-2000':"Romário voltou e o Vasco voltou a ganhar. Campeão do Mundo de Clubes.",
+  'Cruzeiro-1966':"Tostão e Dirceu Lopes. A Raposa dominava Minas Gerais com futebol técnico.",
+  'Cruzeiro-2003':"Alex distribuía jogo e os campeões seguiam vencendo. Bicampeão Brasileiro.",
+  'Cruzeiro-2013':"Fábio no gol e Ricardo Goulart no ataque. Primeiro de dois títulos consecutivos.",
+  'Cruzeiro-2014':"Marcelo Moreno e Everton Ribeiro. Bicampeão Brasileiro, o Cruzeiro era intocável.",
+  'Atlético-MG-1971':"Dadá Maravilha era a estrela. O Galo da Cidade que encantava com gols e garra.",
+  'Atlético-MG-1996':"Marques e Renaldo. O Atlético que brigava por taça com jeito mineiro.",
+  'Atlético-MG-2012':"Ronaldinho Gaúcho brilhou no Galo. Bernard e Jô completavam o ataque.",
+  'Atlético-MG-2021':"Hulk ressurgiu no Galo. O Atlético de Cuca foi campeão Brasileiro e da Copa do Brasil.",
+  'Internacional-1975':"Falcão e Carpegiani. O Colorado que dominava o Sul e sonhava com o Brasil.",
+  'Internacional-1979':"Falcão no auge. O 'Rei de Roma' ainda era colorado e o Inter era imbatível.",
+  'Internacional-2006':"Fernandão e Rafael Sóbis. O campeão do Mundo de Clubes veio do Sul do Brasil.",
+  'Internacional-2009':"D'Alessandro, o Indio. O argentino virou ídolo e o Inter dominou o futebol nacional.",
+  'Grêmio-1981':"Baltazar era o centroavante. O Tricolor Gaúcho construía sua identidade de vencedor.",
+  'Grêmio-1996':"Jardel, o maior artilheiro da história do Grêmio. Campeão no Brasil e na América.",
+  'Grêmio-2017':"Everton Cebolinha e Luan. O Grêmio de Renato Gaúcho foi campeão da Libertadores.",
+  'Grêmio-2020':"Pepê e Diego Souza. O Grêmio que ainda brigava por títulos antes da reconstrução.",
+  'Bahia-1959':"O primeiro campeão Brasileiro de todos os tempos. Biriba, Vavá e companhia.",
+  'Bahia-1988':"Bobô era o homem-gol. O Bahia bicampeão Brasileiro, maior time do Nordeste da era.",
+  'Bahia-2024':"Cauly e Everaldo. O Bahia do Grupo City voltou ao topo com futebol moderno.",
+  'Bahia-2025':"Everton Ribeiro como maestro. O Bahia construindo seu projeto de elite.",
+  'Coritiba-1985':"Renato Gaúcho jogou aqui. O Coxa dava seus primeiros passos entre os grandes.",
+  'Coritiba-2004':"Tcheco era o dono do meio-campo. O Alviverde brigava para se manter na elite.",
+  'Coritiba-2012':"Joel e Geraldo no ataque. O Coritiba que surpreendeu o Brasil.",
+  'Coritiba-2022':"Léo Gamalho e Igor Paixão. O Coxa voltou com juventude e ambição.",
+  'Athletico-PR-2001':"Kléberson e Alex Mineiro. O Furacão que foi ao Mundial de Clubes.",
+  'Athletico-PR-2013':"Paulo Baier era o maestro. O Athletico que brigava pela parte de cima.",
+  'Athletico-PR-2018':"Pablo e Nikão. O Furacão de Tiago Nunes venceu a Copa do Brasil com intensidade.",
+  'Athletico-PR-2022':"Bento e Fernandinho. Campeão da Copa do Brasil e da Copa Sul-Americana no mesmo ano.",
+  'Sport-1987':"Campeão Brasileiro. O Sport que ninguém esperava e que ficou para a história.",
+  'Sport-2005':"Carlinhos Bala e Marcelinho Paraíba. O Leão tentando voltar ao topo.",
+  'Sport-2014':"Rithely e Wesley. O Sport lembrado pelos playoffs do Brasileiro daquele ano.",
+  'Sport-2018':"Hernane Brocador e Everton Felipe. O Sport que lutou contra o rebaixamento com garra.",
+  'Vitória-1993':"Bebeto e Lela. O Vitória que entrou para a história do futebol baiano.",
+  'Vitória-1997':"Ramon e Cláudio Adão. O Rubro-Negro Baiano que sonhava com voos maiores.",
+  'Vitória-2001':"Nadson era a joia. O Vitória tentando se firmar entre os grandes nacionais.",
+  'Vitória-2013':"Gabriel Paulista e Maxi Biancucchi. O Leão que surpreendeu e ficou perto da glória.",
+  'Fortaleza-2021':"Wellington Paulista e Yago Pikachu. O Leão do Pici chegou ao G4 pela primeira vez.",
+  'Fortaleza-2022':"Robson e Lucas Crispim. O Fortaleza na Sul-Americana mostrando crescimento.",
+  'Fortaleza-2023':"Lucero e Pochettino. O Fortaleza brigando pelas primeiras posições.",
+  'Fortaleza-2024':"Lucero e Yago Pikachu. O Leão do Pici na melhor fase da história do clube.",
+  'Ceará-1994':"Sérgio Alves era o artilheiro. O Vovô vivendo sua melhor fase histórica.",
+  'Ceará-2018':"Luiz Otávio e Ricardinho. O Vovô chegou à elite com organização e fé.",
+  'Ceará-2021':"Vina e Fernando Sobral. O Ceará que foi à Sul-Americana e sonhou com voos maiores.",
+  'Ceará-2022':"Vina e Richardson. O Vovô que lutou bravamente para se manter na elite."
 };
 
 // ============================================================
@@ -637,6 +856,11 @@ function irParaTemporada(){mostrarTela('temporada')}
   ticker.innerHTML = items + items;
 })();
 
+function iniciarModo(modo){
+  state.modoJogo=modo;
+  irParaDado();
+}
+
 function irParaDado(){
   state.dadoStep=1;
   state.dadoTime1=null;
@@ -645,6 +869,9 @@ function irParaDado(){
   state.rodadas=[];
   state.record={v:0,e:0,d:0,gp:0,gc:0};
   state.dadoRolagens=0;
+  state.copaFase=0;
+  state.copaRodadas=[];
+  state.copaEliminado=false;
   // Resetar seleção de formação
   document.querySelectorAll('.formacao-card').forEach(c=>c.classList.remove('selected'));
   document.getElementById('btn-ir-dado').style.display='none';
@@ -698,11 +925,14 @@ function rolarDado(){
 function mostrarResultadoDado(time){
   state.dadoTime1 = time;
   const res = document.getElementById('dado-result');
+  const ctx = CONTEXTOS[`${time.time}-${time.ano}`]||'';
   res.innerHTML = `
     <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;color:var(--muted);margin-bottom:6px">Seu time</div>
     <div class="dado-time">${time.time}</div>
     <div class="dado-ano">${time.ano}</div>
-    <div class="dado-formacao">${time.formacao}</div>`;
+    <div class="dado-formacao">${time.formacao}</div>
+    ${ctx?`<div class="dado-contexto">${ctx}</div>`:''}
+  `;
   const actions = document.getElementById('dado-actions');
   actions.style.display='flex';
   document.getElementById('btn-dado-next').textContent='Monte seu time →';
@@ -909,10 +1139,10 @@ function renderJogadoresList(){
     const card = document.createElement('div');
     card.className='jogador-card'+(isSelecionado?' selected':'');
     card.innerHTML=`
-      <div class="jog-pos">${jog.pos}</div>
+      ${miniface(jog)}
       <div class="jog-info">
         <div class="jog-name">${jog.nome}</div>
-        <div class="jog-stats">Jogos — ${jog.jogos} // Gols — ${jog.gols}</div>
+        <div class="jog-stats">${jog.pos} · ${jog.jogos} jogos · ${jog.gols} gols</div>
       </div>`;
     card.onclick=()=>escolherJogador(jog);
     lista.appendChild(card);
@@ -934,8 +1164,8 @@ function escolherJogador(jog){
 }
 
 function confirmarEscalacao(){
-  mostrarTela('temporada');
-  atualizarTemporadaHeader();
+  if(state.modoJogo==='copa') iniciarCopa();
+  else { mostrarTela('temporada'); atualizarTemporadaHeader(); }
 }
 
 // ============================================================
@@ -1064,6 +1294,7 @@ function mostrarSimulacao(idx){
   document.getElementById('sim-score-adv').textContent='0';
   document.getElementById('sim-resultado-badge').innerHTML='';
   document.getElementById('sim-gols-list').innerHTML='';
+  document.getElementById('sim-narracao-box').style.display='none';
 
   let meuPlacar=0, advPlacar=0;
   const golsOrdenados=[...rod.gols];
@@ -1074,6 +1305,12 @@ function mostrarSimulacao(idx){
       const res=rod.resultado;
       const labels={win:'VITÓRIA',draw:'EMPATE',lose:'DERROTA'};
       document.getElementById('sim-resultado-badge').innerHTML=`<div class="sim-resultado ${res}">${labels[res]}</div>`;
+      // Narração
+      setTimeout(()=>{
+        const nb=document.getElementById('sim-narracao-box');
+        document.getElementById('sim-narracao-list').innerHTML=gerarNarracao(rod).map(l=>`<div class="sim-narracao-linha">${l}</div>`).join('');
+        nb.style.display='block';
+      },300);
       const temProxima = idx+1<38;
       document.getElementById('btn-proxima-rodada').style.display=temProxima?'block':'none';
       document.getElementById('btn-proxima-rodada').textContent=temProxima?`Rodada ${idx+2} →`:'Ver resultado final';
@@ -1142,6 +1379,228 @@ function mostrarFim(){
 
 function reiniciar(){
   irParaDado();
+}
+
+// ============================================================
+// MODO COPA
+// ============================================================
+function iniciarCopa(){
+  const pool=[...TIMES].sort(()=>Math.random()-.5).slice(0,15);
+  const meuTeam={...state.dadoTime1,isMeu:true,jogadores:state.dadoTime1?.jogadores||[]};
+  const todas=[meuTeam,...pool];
+  state.copaEquipas=todas;
+  state.copaFase=0;
+  state.copaFaseNomes=['Oitavas de Final','Quartas de Final','Semifinal','Final'];
+  state.copaRodadas=[_gerarFaseCopa(todas)];
+  state.copaEliminado=false;
+  _renderCopaTela();
+  mostrarTela('copa');
+}
+
+function _gerarFaseCopa(equipes){
+  const partidas=[];
+  for(let i=0;i<equipes.length;i+=2){
+    const t1=equipes[i],t2=equipes[i+1];
+    partidas.push({time1:t1,time2:t2,gols1:null,gols2:null,pen:null,vencedor:null,minha:!!(t1?.isMeu||t2?.isMeu)});
+  }
+  return partidas;
+}
+
+function _simCPU(p){
+  const r=Math.random();
+  let g1,g2;
+  if(r<0.45){g1=Math.floor(Math.random()*4)+1;g2=Math.floor(Math.random()*g1);}
+  else if(r<0.65){g1=Math.floor(Math.random()*3);g2=g1;}
+  else{g2=Math.floor(Math.random()*4)+1;g1=Math.floor(Math.random()*g2);}
+  p.gols1=g1;p.gols2=g2;
+  if(g1===g2){const pen=Math.random()<0.5?'time1':'time2';p.pen=pen;p.vencedor=p[pen];}
+  else{p.vencedor=g1>g2?p.time1:p.time2;}
+}
+
+function jogarPartidaCopa(){
+  const fase=state.copaRodadas[state.copaFase];
+  const partida=fase.find(p=>p.minha&&!p.vencedor);
+  if(!partida) return;
+
+  const r=Math.random();
+  let g1,g2;
+  if(r<0.60){g1=Math.floor(Math.random()*4)+1;g2=Math.floor(Math.random()*g1);}
+  else if(r<0.80){g1=Math.floor(Math.random()*3);g2=g1;}
+  else{g2=Math.floor(Math.random()*4)+1;g1=Math.floor(Math.random()*g2);}
+  partida.gols1=g1;partida.gols2=g2;
+
+  const meuTime1=partida.time1.isMeu;
+  const meuGols=meuTime1?g1:g2, advGols=meuTime1?g2:g1;
+  const adv=meuTime1?partida.time2:partida.time1;
+
+  if(g1===g2){
+    const pen=Math.random()<0.5?'time1':'time2';
+    partida.pen=pen;partida.vencedor=partida[pen];
+    if(!partida.vencedor.isMeu)state.copaEliminado=true;
+  } else {
+    partida.vencedor=g1>g2?partida.time1:partida.time2;
+    if(!partida.vencedor.isMeu)state.copaEliminado=true;
+  }
+
+  fase.forEach(p=>{if(!p.minha&&!p.vencedor)_simCPU(p);});
+
+  const meuAdvancou=partida.vencedor.isMeu;
+  const penVenc=partida.pen?(partida.vencedor.isMeu?'meu':'adv'):null;
+
+  // Gols para animação
+  const gols=[];
+  const atk=Object.values(state.escalacao).filter(j=>['ST','RW','LW','MEI'].includes(j.pos));
+  const todos=Object.values(state.escalacao);
+  for(let i=0;i<meuGols;i++){const pool=Math.random()<0.75?(atk.length?atk:todos):todos;const jog=pool[Math.floor(Math.random()*pool.length)];if(jog)gols.push({nome:jog.nome,tempo:Math.floor(Math.random()*90)+1,equipe:'meu'});}
+  const advAtk=(adv?.jogadores||[]).filter(j=>['ST','RW','LW','MEI'].includes(j.pos));
+  const advTodos=adv?.jogadores||[];
+  for(let i=0;i<advGols;i++){const pool=Math.random()<0.75?(advAtk.length?advAtk:advTodos):advTodos;const jog=pool[Math.floor(Math.random()*pool.length)];if(jog)gols.push({nome:jog.nome,tempo:Math.floor(Math.random()*90)+1,equipe:'adv'});}
+  gols.sort((a,b)=>a.tempo-b.tempo);
+
+  const fakeRod={
+    num:`Copa · ${state.copaFaseNomes[state.copaFase]}`,
+    adversario:adv||{time:'—',ano:''},
+    placarMeu:meuGols,placarAdv:advGols,
+    gols,
+    resultado:meuGols>advGols?'win':meuGols===advGols?'draw':'lose',
+    penVenc,copa:true
+  };
+
+  _mostrarSimCopa(fakeRod, meuAdvancou);
+}
+
+function _mostrarSimCopa(rod, meuAdvancou){
+  mostrarTela('simulacao');
+  document.getElementById('sim-rodada-label').textContent=rod.num;
+  document.getElementById('sim-meu-time').textContent=state.dadoTime1?.time||'Meu Time';
+  document.getElementById('sim-meu-ano').textContent=state.dadoTime1?.ano||state.formacaoEscolhida||'';
+  document.getElementById('sim-adv-time').textContent=rod.adversario.time;
+  document.getElementById('sim-adv-ano').textContent=rod.adversario.ano;
+  document.getElementById('sim-score-meu').textContent='0';
+  document.getElementById('sim-score-adv').textContent='0';
+  document.getElementById('sim-resultado-badge').innerHTML='';
+  document.getElementById('sim-gols-list').innerHTML='';
+  document.getElementById('sim-narracao-box').style.display='none';
+  document.getElementById('btn-ver-temporada').style.display='none';
+
+  let mp=0,ap=0;
+  const gols=[...rod.gols];
+
+  function animarGol(i){
+    if(i>=gols.length){
+      const labels={win:'VITÓRIA',draw:'EMPATE',lose:'DERROTA'};
+      let badge=`<div class="sim-resultado ${rod.resultado}">${labels[rod.resultado]}</div>`;
+      if(rod.penVenc){
+        const txt=rod.penVenc==='meu'?'Você avança nos pênaltis!':'Eliminado nos pênaltis.';
+        const cor=rod.penVenc==='meu'?'#6ab04c':'#e55039';
+        badge+=`<div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;color:${cor};margin-top:8px">${txt}</div>`;
+      }
+      document.getElementById('sim-resultado-badge').innerHTML=badge;
+
+      // Narração Copa
+      setTimeout(()=>{
+        const nb=document.getElementById('sim-narracao-box');
+        const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+        const linhas=[];
+        gols.filter(g=>g.equipe==='meu').slice(0,2).forEach(g=>{
+          const jog=Object.values(state.escalacao).find(j=>j.nome===g.nome);
+          const pos=jog?.pos||'ST';
+          const pool=['ST','RW','LW'].includes(pos)?NARRACOES.gol_att:['CM','MEI'].includes(pos)?NARRACOES.gol_mid:NARRACOES.gol_def;
+          linhas.push(pick(pool).replace('{j}',g.nome.split(' ')[0]));
+        });
+        const resKey=rod.penVenc?rod.penVenc==='meu'?'vitoria':'derrota':rod.resultado==='win'?'vitoria':rod.resultado==='draw'?'empate':'derrota';
+        linhas.push(pick(NARRACOES[resKey]).replace('{time}',state.dadoTime1?.time||'Meu Time'));
+        document.getElementById('sim-narracao-list').innerHTML=linhas.map(l=>`<div class="sim-narracao-linha">${l}</div>`).join('');
+        nb.style.display='block';
+      },300);
+
+      const btn=document.getElementById('btn-proxima-rodada');
+      btn.style.display='block';
+      const avancou=rod.resultado==='win'||(rod.penVenc==='meu');
+      if(!avancou){
+        btn.textContent='Ver resultado final';
+        btn.onclick=mostrarFimCopa;
+      } else if(state.copaFase>=3){
+        btn.textContent='🏆 Ver resultado final';
+        btn.onclick=mostrarFimCopa;
+      } else {
+        btn.textContent=`${state.copaFaseNomes[state.copaFase+1]} →`;
+        btn.onclick=avancarFaseCopa;
+      }
+      return;
+    }
+    const g=gols[i];
+    setTimeout(()=>{
+      if(g.equipe==='meu'){mp++;document.getElementById('sim-score-meu').textContent=mp;}
+      else{ap++;document.getElementById('sim-score-adv').textContent=ap;}
+      document.getElementById('sim-score-meu').classList.add('sim-animating');
+      setTimeout(()=>document.getElementById('sim-score-meu').classList.remove('sim-animating'),300);
+      const row=document.createElement('div');row.className='sim-gol-row';
+      const eq=g.equipe==='meu'?(state.dadoTime1?.time||'Meu Time'):rod.adversario.time;
+      row.innerHTML=`<span class="sim-gol-time">${g.tempo}'</span>${g.nome} <span style="color:var(--muted)">(${eq})</span>`;
+      document.getElementById('sim-gols-list').appendChild(row);
+      animarGol(i+1);
+    },400);
+  }
+  setTimeout(()=>animarGol(0),gols.length?600:400);
+}
+
+function avancarFaseCopa(){
+  state.copaFase++;
+  const prev=state.copaRodadas[state.copaFase-1];
+  const vencedores=prev.map(p=>p.vencedor).filter(Boolean);
+  state.copaRodadas.push(_gerarFaseCopa(vencedores));
+  _renderCopaTela();
+  mostrarTela('copa');
+}
+
+function _renderCopaTela(){
+  const fase=state.copaFase;
+  const faseNomes=['Oitavas de Final','Quartas de Final','Semifinal','Final'];
+  const subTextos=['8 times avançam','4 times avançam','2 times avançam','O campeão é revelado'];
+  document.getElementById('copa-fase-label').textContent=faseNomes[fase];
+  document.getElementById('copa-fase-sub').textContent=subTextos[fase]||'';
+
+  const bracket=document.getElementById('copa-bracket');
+  bracket.innerHTML=`<div class="copa-fase-titulo">${faseNomes[fase]}</div>`;
+
+  const partidas=state.copaRodadas[fase]||[];
+  partidas.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='copa-partida'+(p.minha?' minha':' cpu');
+    const t1n=(p.time1?.time||'—')+(p.time1?.time&&p.time1?.time!=='Meu Time'?' '+p.time1.ano:'');
+    const t2n=(p.time2?.time||'—')+(p.time2?.time&&p.time2?.time!=='Meu Time'?' '+p.time2.ano:'');
+    const t1meu=p.time1?.isMeu, t2meu=p.time2?.isMeu;
+    let mid=`<div class="copa-placar">—</div>`;
+    if(p.vencedor) mid=`<div style="text-align:center"><div class="copa-placar">${p.gols1} × ${p.gols2}</div>${p.pen?'<div class="copa-pen">pên.</div>':''}</div>`;
+    let tag='';
+    if(p.minha&&p.vencedor) tag=`<div class="copa-tag ${p.vencedor.isMeu?'win':'lose'}">${p.vencedor.isMeu?'AVANÇA':'ELIM.'}</div>`;
+    card.innerHTML=`
+      <div class="copa-time-nome ${t1meu?'meu':''}">${t1meu?'⭐ ':''} ${t1n}</div>
+      ${mid}
+      <div class="copa-time-nome ${t2meu?'meu':''}" style="text-align:right">${t2n}${t2meu?' ⭐':''}</div>
+      ${tag}`;
+    bracket.appendChild(card);
+  });
+
+  const actions=document.getElementById('copa-actions');
+  const minhaPartida=partidas.find(p=>p.minha&&!p.vencedor);
+  actions.style.display=(minhaPartida&&!state.copaEliminado)?'block':'none';
+}
+
+function mostrarFimCopa(){
+  mostrarTela('fim');
+  const campeao=state.copaFase>=3&&!state.copaEliminado;
+  document.getElementById('fim-titulo').textContent=campeao?'CAMPEÃO':'Copa';
+  document.getElementById('fim-titulo').className='fim-titulo '+(campeao?'perfeito':'derrota');
+  const faseNome=state.copaFaseNomes?.[state.copaFase]||'Copa';
+  document.getElementById('fim-sub').textContent=campeao
+    ?`Lendário. Você conquistou a Copa com ${state.dadoTime1?.time||'seu time'}. Campeão!`
+    :`${state.dadoTime1?.time||'Seu time'} foi eliminado nas ${faseNome}. Boa campanha, mas não foi desta vez.`;
+  document.getElementById('fim-v').textContent=state.copaFase;
+  document.getElementById('fim-e').textContent=campeao?'🏆':0;
+  document.getElementById('fim-d').textContent=state.copaEliminado?1:0;
+  document.getElementById('fim-meu-nome').textContent=`${state.dadoTime1?.time||'Meu Time'} — Copa`;
 }
 
 // ============================================================
