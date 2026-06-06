@@ -212,6 +212,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 .miniface.tier-gold{background:#2A1F0A;border:2px solid var(--gold);color:var(--gold)}
 .miniface.tier-legend{background:#180820;border:2px solid #B07FD4;color:#C39BD3;box-shadow:0 0 8px rgba(176,127,212,.3)}
 .ovr-badge{position:absolute;bottom:-5px;right:-5px;background:var(--darker);border:1px solid currentColor;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;padding:1px 3px;border-radius:2px;line-height:1;color:inherit}
+.pos-tag{font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:1px;border:1px solid var(--brown);padding:1px 4px;border-radius:2px;color:var(--muted);margin-right:3px}
 
 /* NARRAÇÃO */
 .sim-narracao-box{border-left:2px solid var(--gold);padding:12px 16px;margin-bottom:20px;background:rgba(0,0,0,.15);display:none}
@@ -656,6 +657,33 @@ const POSICOES_CAMPO = {
 };
 
 // ============================================================
+// COMPATIBILIDADE DE POSIÇÃO
+// ============================================================
+const POS_COMPAT = {
+  GK:  ['GK'],
+  RB:  ['RB','CB','LB','RM'],
+  CB:  ['CB','RB','LB'],
+  LB:  ['LB','CB','RB','LM'],
+  CM:  ['CM','MEI','RM','LM'],
+  MEI: ['MEI','CM','RW','LW','RM','LM','ST'],
+  RW:  ['RW','LW','MEI','ST','RM'],
+  LW:  ['LW','RW','MEI','ST','LM'],
+  ST:  ['ST','RW','LW'],
+  RM:  ['RM','CM','RW','MEI'],
+  LM:  ['LM','CM','LW','MEI'],
+};
+function posCompat(playerPos, slotPos){
+  return (POS_COMPAT[playerPos]||[playerPos]).includes(slotPos);
+}
+
+// Fila embaralhada — evita repetição de times
+let _timesQueue = [];
+function _sortearTime(){
+  if(_timesQueue.length===0) _timesQueue=[...TIMES].sort(()=>Math.random()-.5);
+  return _timesQueue.pop();
+}
+
+// ============================================================
 // ESTADO
 // ============================================================
 let state = {
@@ -916,7 +944,7 @@ function rolarDado(){
     if(i>15){
       clearInterval(interval);
       box.textContent = faces[Math.floor(Math.random()*6)];
-      const time = TIMES[Math.floor(Math.random()*TIMES.length)];
+      const time = _sortearTime();
       mostrarResultadoDado(time);
     }
   },80);
@@ -1056,7 +1084,7 @@ function rolarDadoEscalacao(){
     i++;
     if(i>15){
       clearInterval(interval);
-      state.timePosAtual=TIMES[Math.floor(Math.random()*TIMES.length)];
+      state.timePosAtual=_sortearTime();
       atualizarEscolhaUI();
     }
   },80);
@@ -1085,12 +1113,14 @@ function renderCampo(){
     slot.style.left=pos.x+'%';
     slot.style.top=pos.y+'%';
     const escolhido = state.escalacao[i];
-    // Pulsa slots vazios quando há jogador pendente para colocar
-    const slotVazioAtivo = temPendente && !escolhido;
+    const compat = temPendente && !escolhido && state.jogadorSelecionado
+      ? posCompat(state.jogadorSelecionado.pos, jog.pos) : true;
+    const slotVazioAtivo = temPendente && !escolhido && compat;
+    const isBlocked = temPendente && !escolhido && !compat;
     slot.innerHTML=`
-      <div class="player-circle ${escolhido?'filled':''} ${slotVazioAtivo?'active-slot':''}">${jog.pos}</div>
+      <div class="player-circle ${escolhido?'filled':''} ${slotVazioAtivo?'active-slot':''} ${isBlocked?'blocked':''}">${jog.pos}</div>
       <div class="player-label ${escolhido?'':'empty'}">${escolhido?escolhido.nome.split(' ')[0]:jog.pos}</div>`;
-    slot.style.cursor = (escolhido || slotVazioAtivo) ? 'pointer' : 'default';
+    slot.style.cursor = isBlocked ? 'not-allowed' : (escolhido || slotVazioAtivo) ? 'pointer' : 'default';
     slot.onclick=()=>selecionarPosicao(i);
     campo.appendChild(slot);
   });
@@ -1098,6 +1128,12 @@ function renderCampo(){
 
 function selecionarPosicao(idx){
   if(state.jogadorSelecionado && !state.escalacao[idx]){
+    const slotPos = state.meuTime.jogadores[idx].pos;
+    if(!posCompat(state.jogadorSelecionado.pos, slotPos)){
+      document.getElementById('escolha-hint').textContent=
+        `${state.jogadorSelecionado.nome.split(' ')[0]} não joga em ${slotPos} — escolha outro slot`;
+      return;
+    }
     // Coloca o jogador pendente neste slot
     state.escalacao[idx] = state.jogadorSelecionado;
     state.jogadorSelecionado = null;
@@ -1138,11 +1174,13 @@ function renderJogadoresList(){
     const isSelecionado = state.jogadorSelecionado && state.jogadorSelecionado.nome===jog.nome;
     const card = document.createElement('div');
     card.className='jogador-card'+(isSelecionado?' selected':'');
+    const posCompats=(POS_COMPAT[jog.pos]||[jog.pos]).map(p=>`<span class="pos-tag">${p}</span>`).join('');
     card.innerHTML=`
       ${miniface(jog)}
       <div class="jog-info">
         <div class="jog-name">${jog.nome}</div>
-        <div class="jog-stats">${jog.pos} · ${jog.jogos} jogos · ${jog.gols} gols</div>
+        <div style="margin:3px 0">${posCompats}</div>
+        <div class="jog-stats">${jog.jogos} jogos · ${jog.gols} gols</div>
       </div>`;
     card.onclick=()=>escolherJogador(jog);
     lista.appendChild(card);
