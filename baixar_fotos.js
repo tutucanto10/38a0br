@@ -127,11 +127,25 @@ async function buscarFotoPorTitulo(nome, wiki) {
   return page?.thumbnail?.source ?? null;
 }
 
+// Títulos Wikipedia para nomes ambíguos
+const WIKI_TITULO_OVERRIDE = {
+  "Roberto Carlos": "Roberto Carlos (futebolista)",
+  "Júlio César":    "Júlio César (futebolista)",
+  "Carlos Alberto": "Carlos Alberto Torres",
+  "Falcão":         "Paulo Roberto Falcão",
+  "Didi":           "Didi (futebolista)",
+  "Gérson":         "Gérson (futebolista)",
+  "Leandro":        "Leandro (futebolista)",
+  "Taffarel":       "Cláudio Taffarel",
+  "Raí":            "Raí Souza Vieira de Oliveira",
+};
+
 async function buscarFoto(nome) {
+  const titulo = WIKI_TITULO_OVERRIDE[nome] || nome;
   // 1. Busca direta por título (mais precisa para jogadores famosos)
   for (const wiki of ["pt.wikipedia.org", "en.wikipedia.org"]) {
-    const src = await buscarFotoPorTitulo(nome, wiki);
-    if (src) return { wiki, titulo: nome, foto: src };
+    const src = await buscarFotoPorTitulo(titulo, wiki);
+    if (src) return { wiki, titulo, foto: src };
     await sleep(400);
   }
 

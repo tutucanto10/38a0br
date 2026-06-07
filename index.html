@@ -138,6 +138,8 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 .jogador-card{background:var(--darker);border:1px solid var(--brown);padding:12px 16px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:12px}
 .jogador-card:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
 .jogador-card.selected{border-color:var(--gold);background:rgba(201,168,76,.1)}
+.jogador-card.bloqueado{opacity:0.38;cursor:not-allowed;pointer-events:none}
+.card-bloqueado-tag{margin-left:auto;font-size:9px;letter-spacing:1px;color:var(--muted);font-family:'Oswald',sans-serif;text-transform:uppercase;white-space:nowrap}
 .jog-pos{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);width:36px;text-transform:uppercase;font-weight:700}
 .jog-info{flex:1}
 .jog-name{font-size:14px;color:var(--gold-light)}
@@ -734,8 +736,11 @@ function posCompat(playerPos, slotPos){
   return (POS_COMPAT[playerPos]||[playerPos]).includes(slotPos);
 }
 
-// Fila embaralhada — evita repetição de times
+// Fila embaralhada — evita repetição de times dentro e entre sessões
+const _ROLLED_KEY = '38a0br_rolled_v1';
 let _timesQueue = [];
+let _rolledSet = new Set(JSON.parse(localStorage.getItem(_ROLLED_KEY) || '[]'));
+
 function _fisherYates(arr){
   for(let i=arr.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
@@ -744,8 +749,21 @@ function _fisherYates(arr){
   return arr;
 }
 function _sortearTime(){
-  if(_timesQueue.length===0) _timesQueue=_fisherYates([...TIMES]);
-  return _timesQueue.pop();
+  if(_timesQueue.length===0){
+    const unrolled=TIMES.filter(t=>!_rolledSet.has(`${t.time}|${t.ano}`));
+    if(unrolled.length===0){
+      // Todos os times já saíram — reinicia o ciclo
+      _rolledSet.clear();
+      localStorage.removeItem(_ROLLED_KEY);
+      _timesQueue=_fisherYates([...TIMES]);
+    } else {
+      _timesQueue=_fisherYates(unrolled);
+    }
+  }
+  const t=_timesQueue.pop();
+  _rolledSet.add(`${t.time}|${t.ano}`);
+  localStorage.setItem(_ROLLED_KEY,JSON.stringify([..._rolledSet]));
+  return t;
 }
 
 // ============================================================
@@ -901,8 +919,23 @@ function miniface(jog, ctx){
   return `<div class="miniface tier-${tier}${extraClass}" data-wiki="${key}"${localAttr}${photoStyle}>${ini}</div>`;
 }
 
+// Títulos Wikipedia para nomes ambíguos (evita pegar cantores, imperadores etc.)
+const WIKI_TITULO_OVERRIDE = {
+  "Roberto Carlos": "Roberto Carlos (futebolista)",
+  "Júlio César":    "Júlio César (futebolista)",
+  "Carlos Alberto": "Carlos Alberto Torres",
+  "Falcão":         "Paulo Roberto Falcão",
+  "Didi":           "Didi (futebolista)",
+  "Gérson":         "Gérson (futebolista)",
+  "Leandro":        "Leandro (futebolista)",
+  "Vampeta":        "Vampeta",
+  "Taffarel":       "Cláudio Taffarel",
+  "Raí":            "Raí Souza Vieira de Oliveira",
+};
+
 async function fetchWikiPhoto(nome){
-  const url=`https://pt.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(nome)}&prop=pageimages&format=json&pithumbsize=130&origin=*`;
+  const titulo = WIKI_TITULO_OVERRIDE[nome] || nome;
+  const url=`https://pt.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(titulo)}&prop=pageimages&format=json&pithumbsize=130&origin=*`;
   try{
     const ctrl=new AbortController();
     setTimeout(()=>ctrl.abort(),5000);
@@ -1445,10 +1478,13 @@ function renderJogadoresList(){
   header.textContent=`${t.time} · ${t.ano} · ${t.formacao}`;
   lista.appendChild(header);
 
+  const jaEscalados = new Set(Object.values(state.escalacao).map(j=>j.nome));
+
   t.jogadores.forEach(jog=>{
     const isSelecionado = state.jogadorSelecionado && state.jogadorSelecionado.nome===jog.nome;
+    const jaUsado = jaEscalados.has(jog.nome);
     const card = document.createElement('div');
-    card.className='jogador-card'+(isSelecionado?' selected':'');
+    card.className='jogador-card'+(isSelecionado?' selected':'')+(jaUsado?' bloqueado':'');
     const posCompats=(POS_COMPAT[jog.pos]||[jog.pos]).map(p=>`<span class="pos-tag">${p}</span>`).join('');
     const ovr=calcOverall(jog,t?.ano), tier=ovrTier(ovr);
     card.innerHTML=`
@@ -1458,8 +1494,8 @@ function renderJogadoresList(){
         <div style="margin:3px 0">${posCompats}</div>
         <div class="jog-stats">${jog.jogos} jogos · ${jog.gols} gols</div>
       </div>
-      <div class="card-ovr tier-${tier}">${ovr}</div>`;
-    card.onclick=()=>escolherJogador(jog);
+      ${jaUsado?'<div class="card-bloqueado-tag">✓ escalado</div>':`<div class="card-ovr tier-${tier}">${ovr}</div>`}`;
+    if(!jaUsado) card.onclick=()=>escolherJogador(jog);
     lista.appendChild(card);
   });
 
