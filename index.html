@@ -257,7 +257,8 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 .copa-tag.lose{background:rgba(229,80,57,.15);color:#e55039;border:1px solid #e55039}
 
 /* ======================== SELEÇÃO DE FORMAÇÃO ======================== */
-.formacao-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
+.formacao-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0}
+@media(max-width:600px){.formacao-grid{grid-template-columns:repeat(2,1fr)}}
 .formacao-card{background:var(--darker);border:2px solid var(--brown);padding:20px 16px;cursor:pointer;transition:.15s;text-align:center}
 .formacao-card:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
 .formacao-card.selected{border-color:var(--gold);background:rgba(201,168,76,.1)}
@@ -358,14 +359,18 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
   <div id="dado-formacao-step" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px;text-align:center">
     <div class="dado-step">Passo 1 de 2 — Escolha a formação</div>
     <div class="dado-label" style="margin-bottom:0">Qual sistema tático você vai usar?</div>
-    <div class="formacao-grid" style="max-width:480px;width:100%">
-      <div class="formacao-card" id="fc-443" onclick="selecionarFormacao('4-4-2')">
+    <div class="formacao-grid" style="max-width:760px;width:100%">
+      <div class="formacao-card" id="fc-442" onclick="selecionarFormacao('4-4-2')">
         <div class="formacao-nome">4-4-2</div>
         <div class="formacao-desc">Clássico · 2 pontas</div>
       </div>
       <div class="formacao-card" id="fc-433" onclick="selecionarFormacao('4-3-3')">
         <div class="formacao-nome">4-3-3</div>
         <div class="formacao-desc">Ofensivo · 3 atacantes</div>
+      </div>
+      <div class="formacao-card" id="fc-4231" onclick="selecionarFormacao('4-2-3-1')">
+        <div class="formacao-nome">4-2-3-1</div>
+        <div class="formacao-desc">Moderno · pivô duplo</div>
       </div>
       <div class="formacao-card" id="fc-424" onclick="selecionarFormacao('4-2-4')">
         <div class="formacao-nome">4-2-4</div>
@@ -374,6 +379,18 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
       <div class="formacao-card" id="fc-352" onclick="selecionarFormacao('3-5-2')">
         <div class="formacao-nome">3-5-2</div>
         <div class="formacao-desc">Sólido · 5 no meio</div>
+      </div>
+      <div class="formacao-card" id="fc-532" onclick="selecionarFormacao('5-3-2')">
+        <div class="formacao-nome">5-3-2</div>
+        <div class="formacao-desc">Defensivo · 5 atrás</div>
+      </div>
+      <div class="formacao-card" id="fc-343" onclick="selecionarFormacao('3-4-3')">
+        <div class="formacao-nome">3-4-3</div>
+        <div class="formacao-desc">Agressivo · 3 atrás</div>
+      </div>
+      <div class="formacao-card" id="fc-4141" onclick="selecionarFormacao('4-1-4-1')">
+        <div class="formacao-nome">4-1-4-1</div>
+        <div class="formacao-desc">Compacto · pivô fixo</div>
       </div>
     </div>
     <div id="btn-ir-dado" style="display:none;margin-top:8px">
@@ -676,6 +693,24 @@ const POSICOES_CAMPO = {
     {pos:"CB",x:70,y:76},{pos:"CB",x:50,y:80},{pos:"CB",x:30,y:76},
     {pos:"RM",x:88,y:52},{pos:"CM",x:68,y:50},{pos:"CM",x:50,y:47},{pos:"CM",x:32,y:50},{pos:"LM",x:12,y:52},
     {pos:"ST",x:62,y:20},{pos:"ST",x:38,y:20}
+  ],
+  "5-3-2": [
+    {pos:"GK",x:50,y:90},
+    {pos:"RB",x:88,y:68},{pos:"CB",x:68,y:74},{pos:"CB",x:50,y:78},{pos:"CB",x:32,y:74},{pos:"LB",x:12,y:68},
+    {pos:"CM",x:68,y:50},{pos:"CM",x:50,y:46},{pos:"CM",x:32,y:50},
+    {pos:"ST",x:62,y:22},{pos:"ST",x:38,y:22}
+  ],
+  "3-4-3": [
+    {pos:"GK",x:50,y:90},
+    {pos:"CB",x:70,y:76},{pos:"CB",x:50,y:80},{pos:"CB",x:30,y:76},
+    {pos:"RM",x:85,y:52},{pos:"CM",x:62,y:50},{pos:"CM",x:38,y:50},{pos:"LM",x:15,y:52},
+    {pos:"RW",x:80,y:22},{pos:"ST",x:50,y:17},{pos:"LW",x:20,y:22}
+  ],
+  "4-1-4-1": [
+    {pos:"GK",x:50,y:90},{pos:"RB",x:80,y:72},{pos:"CB",x:63,y:78},{pos:"CB",x:37,y:78},{pos:"LB",x:20,y:72},
+    {pos:"CM",x:50,y:62},
+    {pos:"RM",x:84,y:46},{pos:"CM",x:63,y:44},{pos:"MEI",x:50,y:40},{pos:"LM",x:16,y:46},
+    {pos:"ST",x:50,y:18}
   ]
 };
 
@@ -1138,7 +1173,7 @@ function irParaDado(){
 function selecionarFormacao(f){
   state.formacaoEscolhida=f;
   document.querySelectorAll('.formacao-card').forEach(c=>c.classList.remove('selected'));
-  const ids={'4-4-2':'fc-443','4-3-3':'fc-433','4-2-4':'fc-424','3-5-2':'fc-352'};
+  const ids={'4-4-2':'fc-442','4-3-3':'fc-433','4-2-3-1':'fc-4231','4-2-4':'fc-424','3-5-2':'fc-352','5-3-2':'fc-532','3-4-3':'fc-343','4-1-4-1':'fc-4141'};
   if(ids[f]) document.getElementById(ids[f]).classList.add('selected');
   document.getElementById('btn-ir-dado').style.display='block';
 }
@@ -1191,7 +1226,6 @@ function mostrarResultadoDado(time){
       ${crestImg(time.time, 48)}
       <div>
         <div class="dado-time">${time.time}</div>
-        <div class="dado-ano">${time.ano}</div>
         <div class="dado-formacao">${time.formacao}</div>
       </div>
     </div>
