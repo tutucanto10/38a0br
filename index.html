@@ -89,88 +89,101 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 
 /* ======================== MOBILE ======================== */
 @media(max-width:600px){
-  /* HEADER */
+  /* ── HEADER (todas as telas) ────────────────────────────── */
   .header{padding:0 16px;height:52px}
   .logo-main{font-size:22px;letter-spacing:3px}
   .logo-sub{display:none}
   .header-tag{display:none}
+  .btn{font-size:15px;padding:10px 20px;letter-spacing:2px}
   .btn-sm{font-size:12px;padding:6px 14px;letter-spacing:1px}
 
-  /* HOME */
+  /* ── HOME ───────────────────────────────────────────────── */
   .home-body{grid-template-columns:1fr;gap:16px;padding:20px 16px 0}
-  .hero-title{font-size:52px;margin-bottom:12px}
-  .hero-sub{max-width:100%}
+  .hero-title{font-size:48px;margin-bottom:12px}
+  .hero-sub{max-width:100%;font-size:12px}
   .home-right{display:none}
-  .stats-strip{margin-top:20px}
+  .stats-strip{margin-top:20px;grid-template-columns:repeat(3,1fr)}
+  .stat-value{font-size:22px}
+  .stat-sub{font-size:9px}
   .home-times-section{padding:16px 16px 32px}
   .times-grid{grid-template-columns:1fr 1fr}
+  .times-card{flex-direction:column;align-items:flex-start;gap:5px;padding:8px 10px}
+  .times-card-anos{justify-content:flex-start}
+  .times-card-name{font-size:13px}
   .lendas-ticker-label{padding:0 12px;font-size:11px;letter-spacing:2px}
 
-  /* DADO */
-  .dado-wrap{padding:20px 16px}
+  /* ── DADO — formação ────────────────────────────────────── */
+  #dado-formacao-step{padding:20px 16px !important}
+  #dado-content{padding:20px 16px !important}
+  .formacao-grid{grid-template-columns:repeat(2,1fr);gap:8px;margin:16px 0}
+  .formacao-card{padding:14px 10px}
+  .formacao-nome{font-size:26px}
+
+  /* ── DADO — dado ────────────────────────────────────────── */
   .dado-box{width:120px;height:120px;font-size:60px}
   .dado-time{font-size:36px}
   .dado-contexto{font-size:11px}
 
-  /* ESCALAÇÃO */
+  /* ── ESCALAÇÃO ──────────────────────────────────────────── */
   .escalacao-header{padding:10px 16px;flex-wrap:wrap;gap:6px}
   .esc-title{font-size:17px;letter-spacing:1px}
   .esc-sub{display:none}
-  .escalacao-body{grid-template-columns:1fr}
+  .esc-progress{gap:3px}
+  .esc-dot{width:6px;height:6px}
+  /* body cresce conforme conteúdo — página rola naturalmente */
+  .escalacao-body{flex:none;grid-template-columns:1fr}
   .campo-side{border-right:none;border-bottom:1px solid var(--brown);padding:12px 16px}
   .campo{max-width:160px}
   .player-circle{width:26px;height:26px;font-size:7px}
   .player-label{font-size:7px;max-width:42px}
   .escolha-side{padding:12px 16px}
   .escolha-pos{font-size:20px;margin-bottom:2px}
-  .jogadores-list{max-height:none;overflow-y:visible}
+  /* lista sem altura fixa: ocupa altura natural, sem scroll interno */
+  .jogadores-list{flex:none;max-height:none;overflow-y:visible}
   .jogador-card{padding:8px 10px;gap:8px}
   .jog-name{font-size:12px}
   .jogador-card .miniface{width:28px;height:28px;font-size:9px}
+  #btn-confirmar{width:100%;box-sizing:border-box;justify-content:center}
 
-  /* TEMPORADA */
+  /* ── TEMPORADA ──────────────────────────────────────────── */
   .temp-header{padding:10px 16px;flex-wrap:wrap;gap:8px}
   .temp-title{font-size:16px;letter-spacing:1px}
-  .temp-record{gap:10px}
-  .temp-rec-val{font-size:18px}
+  .temp-record{gap:8px}
+  .temp-rec-val{font-size:14px}
   .temp-rec-label{font-size:8px;letter-spacing:1px}
   .rodadas-grid{padding:12px 16px;grid-template-columns:1fr}
   .rodada-card{padding:10px 12px}
   .rod-team-name{font-size:13px}
   .rod-score{font-size:20px;min-width:44px}
 
-  /* SIMULAÇÃO */
+  /* ── SIMULAÇÃO ──────────────────────────────────────────── */
   .sim-wrap{padding:20px 16px}
   .sim-placar-box{padding:20px 16px}
-  .sim-score{font-size:42px}
-  .sim-team-name{font-size:16px}
+  .sim-score{font-size:40px}
+  .sim-team-name{font-size:15px}
   .sim-team-year{display:none}
+  #btn-proxima-rodada,#btn-ver-temporada{font-size:14px;padding:8px 16px;letter-spacing:1px}
 
-  /* FIM */
+  /* ── FIM ────────────────────────────────────────────────── */
   .fim-wrap{padding:24px 16px}
-  .fim-titulo{font-size:52px}
+  .fim-titulo{font-size:48px}
   .fim-record-box{padding:16px 0}
   .fim-stat{padding:0 10px}
-  .fim-stat-val{font-size:26px}
+  .fim-stat-val{font-size:24px}
   .fim-meu-time{padding:12px}
-  .fim-meu-nome{font-size:22px}
+  .fim-meu-nome{font-size:20px}
 
-  /* COPA */
+  /* ── COPA ───────────────────────────────────────────────── */
   .copa-header{padding:10px 16px;flex-wrap:wrap;gap:8px}
   .copa-fase-label{font-size:16px;letter-spacing:2px}
   .copa-body{padding:12px 16px}
   .copa-time-nome{font-size:12px}
   .copa-placar{font-size:16px;min-width:40px}
 
-  /* FORMAÇÃO */
-  .formacao-grid{grid-template-columns:repeat(2,1fr);gap:8px;margin:16px 0}
-  .formacao-nome{font-size:26px}
-
-  /* APOIO */
-  .apoio-wrap{padding:24px 16px}
-
-  /* BOTÕES (grandes) */
-  .btn{font-size:16px;padding:10px 24px;letter-spacing:2px}
+  /* ── APOIO ──────────────────────────────────────────────── */
+  #screen-apoio > div:not(.header){padding:16px !important}
+  .apoio-wrap{padding:16px 12px}
+  .apoio-titulo{font-size:36px;letter-spacing:2px}
 }
 
 .preview-title{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--brown);margin-bottom:20px}
@@ -364,6 +377,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 /* ======================== TELA APOIO ======================== */
 #screen-apoio{align-items:center;justify-content:center}
 .apoio-wrap{max-width:480px;width:100%;padding:40px;text-align:center}
+.apoio-titulo{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);letter-spacing:4px;line-height:1}
 .pix-key-box{background:rgba(0,0,0,.3);border:1px solid var(--brown);padding:14px 16px;font-family:'Oswald',sans-serif;font-size:12px;color:var(--gold-light);word-break:break-all;margin-bottom:16px;letter-spacing:.5px;line-height:1.6}
 .valor-pill{border:1px solid var(--brown);padding:10px 16px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);transition:.15s}
 .valor-pill:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
@@ -654,7 +668,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
     <div class="apoio-wrap">
       <div class="ornament">✦ ✦ ✦</div>
       <div style="height:24px"></div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);letter-spacing:4px;line-height:1">Apoie o Criador</div>
+      <div class="apoio-titulo">Apoie o Criador</div>
       <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:16px auto 32px;max-width:360px">
         O 38A0BR é um projeto independente feito com amor ao futebol brasileiro. Se você curtiu jogar, considere apoiar para manter o almanaque vivo e crescendo.
       </p>
