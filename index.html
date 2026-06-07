@@ -38,6 +38,14 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 .ticker-inner{display:flex;gap:0;animation:scroll 30s linear infinite;white-space:nowrap;width:max-content}
 @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .ticker-item{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;color:var(--darker);text-transform:uppercase;padding:0 24px;border-right:1px solid rgba(0,0,0,0.2)}
+/* LENDAS TICKER */
+.lendas-ticker{background:var(--darker);border-top:2px solid var(--brown);border-bottom:2px solid var(--brown);display:flex;align-items:center;flex-shrink:0}
+.lendas-ticker-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:4px;color:var(--gold);padding:0 20px;flex-shrink:0;border-right:2px solid var(--brown);line-height:1;align-self:stretch;display:flex;align-items:center}
+.lendas-ticker-scroll{overflow:hidden;flex:1;padding:9px 0}
+.lendas-ticker-inner{display:flex;gap:0;animation:scroll 55s linear infinite reverse;white-space:nowrap;width:max-content;align-items:center}
+.lendas-ticker-item{display:inline-flex;align-items:center;gap:10px;padding:0 28px;border-right:1px solid var(--brown)}
+.lendas-ticker-item .miniface{width:30px;height:30px;font-size:9px}
+.lendas-nome{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
 
 /* BOTÕES */
 .btn{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:12px 36px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:10px;transition:all .15s}
@@ -342,6 +350,12 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
           <div class="preview-player"><span class="preview-pos">LW</span><span class="preview-pname">Pepe</span><span class="preview-stat">Gols — 405</span></div>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="lendas-ticker">
+    <div class="lendas-ticker-label">Lendas</div>
+    <div class="lendas-ticker-scroll">
+      <div class="lendas-ticker-inner" id="lendas-ticker-inner"></div>
     </div>
   </div>
   <div class="home-times-section">
@@ -1139,12 +1153,43 @@ function irParaHome(){mostrarTela('home')}
 function irParaTemporada(){mostrarTela('temporada')}
 
 // ============================================================
-// TELA HOME — ticker
+// TELA HOME — ticker times
 // ============================================================
 (function initTicker(){
   const ticker = document.getElementById('ticker-inner');
   const items = TIMES.slice(0,20).map(t=>`<span class="ticker-item">${t.time} ${t.ano}</span>`).join('');
   ticker.innerHTML = items + items;
+})();
+
+// TELA HOME — ticker lendas
+// ============================================================
+(function initLendasTicker(){
+  const LENDAS = [
+    "Pelé","Garrincha","Zico","Romário","Ronaldinho Gaúcho",
+    "Roberto Carlos","Cafu","Rivaldo","Bebeto","Taffarel",
+    "Didi","Jairzinho","Carlos Alberto","Nilton Santos","Rogério Ceni",
+    "Raí","Edmundo","Falcão","Júnior","Robinho",
+    "Hulk","Roberto Dinamite","Gabigol","Endrick","Júlio César"
+  ];
+
+  // Mapeia cada nome ao primeiro time/ano+objeto jogador onde aparece
+  const playerMap = {};
+  for(const t of TIMES){
+    for(const jog of t.jogadores){
+      if(LENDAS.includes(jog.nome) && !playerMap[jog.nome])
+        playerMap[jog.nome] = {jog, time: t.time, ano: t.ano};
+    }
+  }
+
+  const items = LENDAS.map(nome => {
+    const entry = playerMap[nome];
+    if(!entry) return '';
+    return `<span class="lendas-ticker-item">${miniface(entry.jog, entry)}<span class="lendas-nome">${nome}</span></span>`;
+  }).filter(Boolean).join('');
+
+  const el = document.getElementById('lendas-ticker-inner');
+  el.innerHTML = items + items;
+  updateMinifaces();
 })();
 
 (function initPreviewBadges(){
