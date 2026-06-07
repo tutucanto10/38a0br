@@ -310,13 +310,13 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
         <div class="preview-title">Exemplo de duelo</div>
         <div class="preview-formation">
           <div class="preview-team">
-            <div class="preview-badge">FLA</div>
+            <div class="preview-badge" id="pb-fla"></div>
             <div class="preview-name">Flamengo</div>
             <div class="preview-year">1982</div>
           </div>
           <div class="preview-vs">VS</div>
           <div class="preview-team">
-            <div class="preview-badge">SAN</div>
+            <div class="preview-badge" id="pb-san"></div>
             <div class="preview-name">Santos</div>
             <div class="preview-year">1962</div>
           </div>
@@ -1005,6 +1005,18 @@ function irParaTemporada(){mostrarTela('temporada')}
   const ticker = document.getElementById('ticker-inner');
   const items = TIMES.slice(0,20).map(t=>`<span class="ticker-item">${t.time} ${t.ano}</span>`).join('');
   ticker.innerHTML = items + items;
+})();
+
+(function initPreviewBadges(){
+  const fill=(id,time)=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const src=CRESTS[slugify(time)];
+    if(src) el.innerHTML=`<img src="${src}" style="width:42px;height:42px;object-fit:contain">`;
+    else el.textContent=time.slice(0,3).toUpperCase();
+  };
+  fill('pb-fla','Flamengo');
+  fill('pb-san','Santos');
 })();
 
 function iniciarModo(modo){
