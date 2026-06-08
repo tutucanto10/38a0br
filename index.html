@@ -1052,24 +1052,28 @@ const WIKI_TITULO_OVERRIDE = {
   "Vampeta":        "Vampeta",
   "Taffarel":       "Cláudio Taffarel",
   "Raí":            "Raí Souza Vieira de Oliveira",
-  "Ronaldo":        "Ronaldo (futebolista)",
+  "Ronaldo":        "Ronaldo (Brazilian footballer)",
   "PH Ganso":       "Paulo Henrique Ganso",
 };
 
 async function fetchWikiPhoto(nome){
   const titulo = WIKI_TITULO_OVERRIDE[nome] || nome;
-  const url=`https://pt.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(titulo)}&prop=pageimages&format=json&pithumbsize=130&origin=*`;
-  try{
-    const ctrl=new AbortController();
-    setTimeout(()=>ctrl.abort(),5000);
-    const r=await fetch(url,{signal:ctrl.signal});
-    const d=await r.json();
-    const pages=d.query?.pages;
-    if(!pages) return null;
-    const pg=Object.values(pages)[0];
-    if(pg.missing!==undefined) return null;
-    return pg?.thumbnail?.source||null;
-  }catch{return null;}
+  for(const wiki of ['pt.wikipedia.org','en.wikipedia.org']){
+    const url=`https://${wiki}/w/api.php?action=query&titles=${encodeURIComponent(titulo)}&prop=pageimages&format=json&pithumbsize=130&origin=*`;
+    try{
+      const ctrl=new AbortController();
+      setTimeout(()=>ctrl.abort(),5000);
+      const r=await fetch(url,{signal:ctrl.signal});
+      const d=await r.json();
+      const pages=d.query?.pages;
+      if(!pages) continue;
+      const pg=Object.values(pages)[0];
+      if(pg.missing!==undefined) continue;
+      const src=pg?.thumbnail?.source;
+      if(src) return src;
+    }catch{}
+  }
+  return null;
 }
 
 function applyWikiPhoto(el,url){

@@ -55,8 +55,10 @@ const FAMOSOS = new Set([
   "Jardel","Everton Cebolinha","Arthur",
   // Athletico-PR
   "Kléberson","Lucho González","Vitor Roque",
+  // Santos
+  "Neymar","PH Ganso",
   // Outros
-  "Renato Gaúcho","David Luiz","Júlio César",
+  "Renato Gaúcho","David Luiz","Júlio César","Ronaldo",
 ]);
 
 // ─── --limpar: apaga fotos de não-famosos (mantém as dos famosos) ─────────────
@@ -138,6 +140,9 @@ const WIKI_TITULO_OVERRIDE = {
   "Leandro":        "Leandro (futebolista)",
   "Taffarel":       "Cláudio Taffarel",
   "Raí":            "Raí Souza Vieira de Oliveira",
+  "Ronaldo":        "Ronaldo (Brazilian footballer)",
+  "Neymar":         "Neymar",
+  "PH Ganso":       "Paulo Henrique Ganso",
 };
 
 async function buscarFoto(nome) {
